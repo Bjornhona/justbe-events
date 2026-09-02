@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  title: 'Just Be Events — Studio',
   robots: { index: false, follow: false },
 };
 
