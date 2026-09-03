@@ -11,6 +11,11 @@
     "language": "Language",
     "skipToContent": "Skip to content"
   },
+  "NotFound": {
+    "title": "This page does not exist",
+    "body": "The link may be mistyped, or the page may have moved.",
+    "back": "Back to the home page"
+  },
   "Footer": {
     "contactHeading": "Contact",
     "emailLabel": "Email",

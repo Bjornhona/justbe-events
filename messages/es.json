@@ -11,6 +11,11 @@
     "language": "Idioma",
     "skipToContent": "Saltar al contenido"
   },
+  "NotFound": {
+    "title": "Esta página no existe",
+    "body": "El enlace puede estar mal escrito o la página puede haberse movido.",
+    "back": "Volver al inicio"
+  },
   "Footer": {
     "contactHeading": "Contacto",
     "emailLabel": "Email",

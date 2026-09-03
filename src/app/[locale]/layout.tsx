@@ -47,6 +47,10 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
+      // Opts into Next's handling of the `scroll-behavior: smooth` in
+      // globals.css: anchor clicks glide, but route changes still jump to the
+      // top instantly instead of scrolling the whole page.
+      data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
