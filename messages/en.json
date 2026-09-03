@@ -1,1 +1,28 @@
-{}
+{
+  "Nav": {
+    "primary": "Main navigation",
+    "mobile": "Main navigation (mobile)",
+    "home": "Just Be Events, back to top",
+    "services": "Services",
+    "projects": "Work",
+    "contact": "Contact",
+    "openMenu": "Open the menu",
+    "closeMenu": "Close the menu",
+    "language": "Language",
+    "skipToContent": "Skip to content"
+  },
+  "Footer": {
+    "contactHeading": "Contact",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "whatsappLabel": "WhatsApp",
+    "legalHeading": "Legal",
+    "legalNav": "Legal links",
+    "legalNotice": "Legal notice",
+    "privacy": "Privacy policy",
+    "cookies": "Cookie policy",
+    "rights": "All rights reserved.",
+    "creditPrefix": "Design and development:",
+    "creditName": "Åsa Eriksson"
+  }
+}

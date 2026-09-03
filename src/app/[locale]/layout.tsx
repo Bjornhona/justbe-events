@@ -4,6 +4,8 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -48,7 +50,16 @@ export default async function LocaleLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          <Header />
+          {/* The header is `position: fixed`, so it does not reserve space.
+              A page whose first section is not a full-bleed hero needs to
+              clear it itself with `pt-18`. */}
+          <main id="main" className="flex-1">
+            {children}
+          </main>
+          <Footer />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

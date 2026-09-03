@@ -66,6 +66,7 @@ export type SiteSettingsQueryResult = {
   /** Resolved CDN URL of the hero video, or null when none is uploaded. */
   heroVideoUrl?: Maybe<string>
   email?: Maybe<string>
+  showPhonePublicly?: Maybe<boolean>
   /** Already gated on `showPhonePublicly` — null means do not render a phone. */
   phone?: Maybe<string>
   whatsapp?: Maybe<string>
@@ -92,6 +93,7 @@ export const siteSettingsQuery = defineQuery(`
     heroImage { ${IMAGE_FIELDS} },
     "heroVideoUrl": heroVideo.asset->url,
     email,
+    showPhonePublicly,
     "phone": select(showPhonePublicly == true => phone),
     whatsapp,
     legalName,

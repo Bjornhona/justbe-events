@@ -35,11 +35,12 @@
   --color-jb-950: #032e2c;
 
   /* neutrals — warm, so the light background does not feel clinical */
-  --color-ink:       #14181a;
-  --color-ink-muted: #4a5356;
-  --color-paper:     #fafaf8;
-  --color-paper-alt: #f2f2ee;
-  --color-line:      #e2e2dc;
+  --color-ink:       #2c2725;
+  --color-ink-body:  #514c4a;  /* the logo colour — body copy */
+  --color-ink-muted: #6b6461;  /* captions, meta, labels */
+  --color-paper:     #faf8f5;
+  --color-paper-alt: #f1ede7;
+  --color-line:      #e4e0da;
 }
 
 @theme inline {
@@ -49,9 +50,30 @@
 
 :root {
   color-scheme: light;
+
+  /* Height of the fixed header. Anything that has to clear it reads this. */
+  --header-h: 4.5rem; /* = h-18 */
 }
 
 body {
   background: var(--color-paper);
   color: var(--color-ink);
+}
+
+/* The header is fixed, so an anchor link would otherwise scroll the section
+ * heading to y=0 — underneath it. Every section that can be a link target
+ * stops short by the header's height plus a little breathing room. */
+section[id],
+:target {
+  scroll-margin-top: calc(var(--header-h) + 1.5rem);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }

@@ -122,10 +122,10 @@ async function seed() {
   tx.createOrReplace({
     _id: 'siteSettings',
     _type: 'siteSettings',
-    brandName: 'Just Be Events',
+    brandName: 'B Vents',
     tagline: {
-      en: 'No matter when, no matter where, just matters who and why',
-      es: 'No matter when, no matter where, just matters who and why',
+      en: 'B Vents is a event management company that specializes in creating and managing events for businesses and organizations.',
+      es: 'B Vents es una empresa de gestión de eventos que se especializa en crear y gestionar eventos para empresas y organizaciones.',
     },
     email: 'info@justbe-events.com',
     showPhonePublicly: false,
