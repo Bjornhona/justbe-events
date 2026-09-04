@@ -1,4 +1,4 @@
-# Legal texts — Just Be Events (EN)
+# Legal texts — B Vents (EN)
 
 > **Draft for review.** Not legal advice. The Spanish version is the governing
 > text; this English version is provided for the convenience of international
@@ -17,9 +17,9 @@ In accordance with article 10 of Spanish Law 34/2002 on information society serv
 - **Company name:** Barbara Juan Portoles Events, S.L.
 - **Tax ID (NIF):** B93941276
 - **Registered address:** Paseo de Sant Gervasio 57 bis, 3º 3ª, 08022 Barcelona, Spain
-- **Email:** info@justbe-events.com
+- **Email:** info@b-vents.com
 - **Registry details:** Registered at the Companies Register of Barcelona, [PENDING: volume, folio, sheet, entry]
-- **Trading name:** Just Be Events
+- **Trading name:** B Vents
 
 ### Purpose
 
@@ -60,7 +60,7 @@ These terms are governed by Spanish law. Any dispute shall be submitted to the c
 - **Controller:** Barbara Juan Portoles Events, S.L.
 - **Tax ID (NIF):** B93941276
 - **Address:** Paseo de Sant Gervasio 57 bis, 3º 3ª, 08022 Barcelona, Spain
-- **Email:** info@justbe-events.com
+- **Email:** info@b-vents.com
 
 ### What data we process
 
@@ -112,7 +112,7 @@ Some of the above providers are established outside the European Economic Area. 
 
 ### Your rights
 
-Any person may exercise the rights of access, rectification, erasure, objection, restriction of processing and portability, and may withdraw consent, by writing to **info@justbe-events.com** stating the right they wish to exercise.
+Any person may exercise the rights of access, rectification, erasure, objection, restriction of processing and portability, and may withdraw consent, by writing to **info@b-vents.com** stating the right they wish to exercise.
 
 You also have the right to lodge a complaint with the Spanish Data Protection Agency (**www.aepd.es**), in particular if you consider that your request has not been satisfactorily resolved.
 

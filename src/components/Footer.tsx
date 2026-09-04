@@ -120,7 +120,7 @@ export default async function Footer() {
         <div className="mt-12 flex flex-col gap-3 border-t border-line pt-8 text-xs text-ink-muted sm:flex-row sm:items-baseline sm:justify-between">
           <div className="flex flex-col gap-1">
             <p>
-              © {year} {settings?.brandName ?? 'Just Be Events'}.{' '}
+              © {year} {settings?.brandName ?? 'B Vents'}.{' '}
               {t('rights')}
             </p>
             {fiscalLine && <p>{fiscalLine}</p>}

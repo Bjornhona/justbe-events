@@ -28,7 +28,7 @@ export default function NotFound() {
           href="/"
           className="mt-2 rounded-xs text-sm font-medium text-jb-700 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jb-700"
         >
-          Just Be Events
+          B Vents
         </Link>
       </body>
     </html>

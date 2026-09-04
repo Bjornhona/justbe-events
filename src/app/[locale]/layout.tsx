@@ -22,12 +22,12 @@ const geistMono = Geist_Mono({
 // are a matched pair. robots.txt asks crawlers not to look; this meta tag tells
 // the ones that looked anyway not to index. Preview deploys need both, the live
 // site needs neither. After the first production deploy, view source on
-// https://justbe-events.com and confirm there is no `noindex` robots meta tag.
+// https://b-vents.com and confirm there is no `noindex` robots meta tag.
 const isProduction = process.env.VERCEL_ENV === "production";
 
 export const metadata: Metadata = {
-  title: "Just Be Events",
-  description: "Just Be Events",
+  title: "B Vents",
+  description: "Eventos y Experiencias",
   // Anything that is not demonstrably production — preview deploys, and local
   // dev, where VERCEL_ENV is undefined — is kept out of the index.
   ...(isProduction ? {} : { robots: { index: false, follow: false } }),

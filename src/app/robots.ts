@@ -4,7 +4,7 @@ import type { MetadataRoute } from 'next'
  * TODO — LAUNCH DAY: revisit this file *and* the `robots` block in
  * `src/app/[locale]/layout.tsx`. They are a matched pair; changing one without
  * the other leaves the site either invisible or half-exposed. Verify after the
- * first production deploy by opening https://justbe-events.com/robots.txt and
+ * first production deploy by opening https://b-vents.com/robots.txt and
  * confirming it says `Allow: /` — not `Disallow: /`.
  *
  * `VERCEL_ENV` is "production" only for production deployments; it is "preview"

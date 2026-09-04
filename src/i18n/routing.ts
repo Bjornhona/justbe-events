@@ -7,7 +7,7 @@ export const routing = defineRouting({
   defaultLocale: 'es',
 
   // 'always' puts the locale in every URL, including the default:
-  // justbe-events.com/es and justbe-events.com/en.
+  // b-vents.com/es and b-vents.com/en.
   // Cleaner for hreflang and avoids an ambiguous root.
   localePrefix: 'always',
 

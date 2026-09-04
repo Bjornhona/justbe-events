@@ -35,7 +35,7 @@ export default async function Header() {
         aria-label={t('home')}
         className="rounded-xs text-lg font-semibold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current"
       >
-        Just Be Events
+        B Vents
       </Link>
 
       {/* Desktop */}

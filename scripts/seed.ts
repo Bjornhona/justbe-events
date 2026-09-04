@@ -127,7 +127,7 @@ async function seed() {
       en: 'B Vents is a event management company that specializes in creating and managing events for businesses and organizations.',
       es: 'B Vents es una empresa de gestión de eventos que se especializa en crear y gestionar eventos para empresas y organizaciones.',
     },
-    email: 'info@justbe-events.com',
+    email: 'info@b-vents.com',
     showPhonePublicly: false,
     legalName: 'Barbara Juan Portoles Events SL',
     nif: 'B93941276',

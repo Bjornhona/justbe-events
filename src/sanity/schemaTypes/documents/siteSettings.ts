@@ -13,7 +13,7 @@ export const siteSettings = defineType({
     {name: 'meta', title: 'SEO'},
   ],
   fields: [
-    defineField({name: 'brandName', title: 'Nombre comercial', type: 'string', group: 'brand', initialValue: 'Just Be Events'}),
+    defineField({name: 'brandName', title: 'Nombre comercial', type: 'string', group: 'brand', initialValue: 'B Vents'}),
     defineField({
       name: 'tagline',
       title: 'Claim',
@@ -31,7 +31,7 @@ export const siteSettings = defineType({
       options: {accept: 'video/*'},
     }),
 
-    defineField({name: 'email', title: 'Email', type: 'string', group: 'contact', initialValue: 'info@justbe-events.com'}),
+    defineField({name: 'email', title: 'Email', type: 'string', group: 'contact', initialValue: 'info@b-vents.com'}),
     defineField({
       name: 'phone',
       title: 'Teléfono',
