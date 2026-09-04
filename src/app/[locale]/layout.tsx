@@ -18,19 +18,26 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// TODO — LAUNCH DAY: revisit this together with `src/app/robots.ts`. The two
-// are a matched pair. robots.txt asks crawlers not to look; this meta tag tells
-// the ones that looked anyway not to index. Preview deploys need both, the live
-// site needs neither. After the first production deploy, view source on
+// TODO — LAUNCH DAY, three changes, all at the same time:
+//   1. remove COMING_SOON from Vercel (Production)
+//   2. set NEXT_PUBLIC_SITE_LIVE=true in Vercel (Production)
+//   3. delete `src/app/coming-soon/` and the COMING_SOON branch in `src/proxy.ts`
+// Revisit this together with `src/app/robots.ts`. The two are a matched pair:
+// robots.txt asks crawlers not to look; this meta tag tells the ones that looked
+// anyway not to index. After the first production deploy, view source on
 // https://b-vents.com and confirm there is no `noindex` robots meta tag.
-const isProduction = process.env.VERCEL_ENV === "production";
+//
+// Keyed off NEXT_PUBLIC_SITE_LIVE rather than VERCEL_ENV, because the
+// production domain is public while the site is still unfinished.
+const isLive = process.env.NEXT_PUBLIC_SITE_LIVE === "true";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL!),
   title: "B Vents",
   description: "Eventos y Experiencias",
-  // Anything that is not demonstrably production — preview deploys, and local
-  // dev, where VERCEL_ENV is undefined — is kept out of the index.
-  ...(isProduction ? {} : { robots: { index: false, follow: false } }),
+  // Anything short of the exact string "true" — unset, preview deploys, local
+  // dev — is kept out of the index.
+  ...(isLive ? {} : { robots: { index: false, follow: false } }),
 };
 
 export function generateStaticParams() {
