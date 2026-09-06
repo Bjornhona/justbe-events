@@ -41,11 +41,30 @@
   --color-paper:     #faf8f5;
   --color-paper-alt: #f1ede7;
   --color-line:      #e4e0da;
+
+  /* Type scale — five steps, fluid between 375px and 1440px.
+   * Tailwind pairs each `--text-*` with its `--line-height` / `--letter-spacing`
+   * siblings, so `text-display` carries its leading and tracking with it. */
+  --text-display: clamp(3rem, 9vw, 8.5rem);
+  --text-display--line-height: 0.95;
+  --text-display--letter-spacing: -0.02em;
+
+  --text-h2: clamp(2rem, 4.5vw, 3.5rem);
+  --text-h2--line-height: 1.05;
+
+  --text-h3: clamp(1.25rem, 2vw, 1.75rem);
+
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.6;
+
+  --text-small: 0.8125rem;
+  --text-small--line-height: 1.5;
 }
 
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-cormorant);
 }
 
 :root {
