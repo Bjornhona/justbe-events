@@ -16,6 +16,23 @@
     "lead": "We design and produce corporate events and private celebrations across Spain.",
     "cta": "Let's talk"
   },
+  "Positioning": {
+    "body": "Every event starts with one question: what do you want people to remember. Everything else follows from the answer. We take care of the production so that you can actually be present. And we stay until the last light goes out."
+  },
+  "Pillars": {
+    "imagine": {
+      "name": "Imagine",
+      "description": "The concept, the story and the first picture of what will happen."
+    },
+    "build": {
+      "name": "Build",
+      "description": "Production, suppliers and logistics, coordinated from start to finish."
+    },
+    "live": {
+      "name": "Live",
+      "description": "Event day: direction on the floor and everything that goes unseen."
+    }
+  },
   "NotFound": {
     "title": "This page does not exist",
     "body": "The link may be mistyped, or the page may have moved.",

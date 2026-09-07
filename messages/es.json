@@ -16,6 +16,23 @@
     "lead": "Diseñamos y producimos eventos corporativos y de marca privada en toda España.",
     "cta": "Hablemos"
   },
+  "Positioning": {
+    "body": "Cada evento empieza con una pregunta: qué queréis que la gente recuerde. Todo lo demás sale de esa respuesta. Nos ocupamos de la producción para que vosotros podáis estar presentes. Y nos quedamos hasta que se apaga la última luz."
+  },
+  "Pillars": {
+    "imagine": {
+      "name": "Imaginamos",
+      "description": "El concepto, el relato y la primera imagen de lo que va a pasar."
+    },
+    "build": {
+      "name": "Construimos",
+      "description": "Producción, proveedores y logística, coordinados de principio a fin."
+    },
+    "live": {
+      "name": "Vivimos",
+      "description": "El día del evento: dirección en sala y todo lo que no se ve."
+    }
+  },
   "NotFound": {
     "title": "Esta página no existe",
     "body": "El enlace puede estar mal escrito o la página puede haberse movido.",
