@@ -11,6 +11,11 @@
     "language": "Idioma",
     "skipToContent": "Saltar al contenido"
   },
+  "Hero": {
+    "tagline": "No importa cuándo, no importa dónde, <accent>solo</accent> importa quién y por qué",
+    "lead": "Diseñamos y producimos eventos corporativos y de marca privada en toda España.",
+    "cta": "Hablemos"
+  },
   "NotFound": {
     "title": "Esta página no existe",
     "body": "El enlace puede estar mal escrito o la página puede haberse movido.",

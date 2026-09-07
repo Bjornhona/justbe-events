@@ -11,6 +11,11 @@
     "language": "Language",
     "skipToContent": "Skip to content"
   },
+  "Hero": {
+    "tagline": "No matter when, no matter where, <accent>just</accent> matters who and why",
+    "lead": "We design and produce corporate events and private celebrations across Spain.",
+    "cta": "Let's talk"
+  },
   "NotFound": {
     "title": "This page does not exist",
     "body": "The link may be mistyped, or the page may have moved.",
