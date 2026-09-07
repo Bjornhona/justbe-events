@@ -34,7 +34,7 @@ const cormorantGaramond = Cormorant_Garamond({
 // Revisit this together with `src/app/robots.ts`. The two are a matched pair:
 // robots.txt asks crawlers not to look; this meta tag tells the ones that looked
 // anyway not to index. After the first production deploy, view source on
-// https://b-vents.com and confirm there is no `noindex` robots meta tag.
+// https://b-events.es and confirm there is no `noindex` robots meta tag.
 //
 // Keyed off NEXT_PUBLIC_SITE_LIVE rather than VERCEL_ENV, because the
 // production domain is public while the site is still unfinished.
@@ -42,7 +42,7 @@ const isLive = process.env.NEXT_PUBLIC_SITE_LIVE === "true";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL!),
-  title: "B Vents",
+  title: "B Events",
   description: "Eventos y Experiencias",
   // Anything short of the exact string "true" — unset, preview deploys, local
   // dev — is kept out of the index.

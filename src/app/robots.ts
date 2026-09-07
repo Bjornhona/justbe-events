@@ -6,7 +6,7 @@ import type { MetadataRoute } from 'next'
  *   2. set NEXT_PUBLIC_SITE_LIVE=true in Vercel (Production)
  *   3. delete `src/app/coming-soon/` and the COMING_SOON branch in
  *      `src/proxy.ts`
- * Then verify on production: https://b-vents.com/robots.txt says `Allow: /`
+ * Then verify on production: https://b-events.es/robots.txt says `Allow: /`
  * rather than `Disallow: /`, and view-source on the homepage has no `noindex`
  * robots meta tag.
  *

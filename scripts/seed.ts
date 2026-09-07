@@ -122,12 +122,12 @@ async function seed() {
   tx.createOrReplace({
     _id: 'siteSettings',
     _type: 'siteSettings',
-    brandName: 'B Vents',
+    brandName: 'B Events',
     tagline: {
-      en: 'B Vents is a event management company that specializes in creating and managing events for businesses and organizations.',
-      es: 'B Vents es una empresa de gestión de eventos que se especializa en crear y gestionar eventos para empresas y organizaciones.',
+      en: 'B Events is a event management company that specializes in creating and managing events for businesses and organizations.',
+      es: 'B Events es una empresa de gestión de eventos que se especializa en crear y gestionar eventos para empresas y organizaciones.',
     },
-    email: 'info@b-vents.com',
+    email: 'info@b-events.es',
     showPhonePublicly: false,
     legalName: 'Barbara Juan Portoles Events SL',
     nif: 'B93941276',

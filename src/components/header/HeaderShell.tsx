@@ -37,7 +37,7 @@ export function HeaderShell({ children }: { children: ReactNode }) {
         'transition-colors duration-300 ease-out motion-reduce:transition-none',
         scrolled
           ? 'bg-paper/95 text-ink border-b border-line backdrop-blur-sm'
-          : 'bg-transparent text-paper border-b border-transparent',
+          : 'bg-transparent text-ink border-b border-transparent', // Also test with text-paper
       ].join(' ')}
     >
       <div className="mx-auto flex h-full max-w-6xl items-center justify-between gap-6 px-4 sm:px-6">

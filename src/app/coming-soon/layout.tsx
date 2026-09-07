@@ -9,7 +9,7 @@ import '../globals.css'
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'B·Vents',
+  title: 'B Events',
   robots: { index: false, follow: false },
 }
 
