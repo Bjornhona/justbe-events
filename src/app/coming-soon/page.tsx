@@ -25,10 +25,10 @@ export default function ComingSoonPage() {
           <p lang="en">New website on its way.</p>
         </div>
         <a
-          href="mailto:info@b-events.es"
+          href="mailto:events@b-events.es"
           className="text-sm text-jb-700 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jb-700"
         >
-          info@b-events.es
+          events@b-events.es
         </a>
       </div>
       <p className="pb-8 text-center text-xs text-ink-muted">

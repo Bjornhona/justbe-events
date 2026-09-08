@@ -90,7 +90,7 @@ export const siteSettings = defineType({
       ],
     }),
 
-    defineField({name: 'email', title: 'Email', type: 'string', group: 'contact', initialValue: 'info@b-events.es'}),
+    defineField({name: 'email', title: 'Email', type: 'string', group: 'contact', initialValue: 'events@b-events.es'}),
     defineField({
       name: 'phone',
       title: 'Teléfono',

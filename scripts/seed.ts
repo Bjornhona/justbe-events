@@ -127,7 +127,7 @@ async function seed() {
       en: 'B Events is a event management company that specializes in creating and managing events for businesses and organizations.',
       es: 'B Events es una empresa de gestión de eventos que se especializa en crear y gestionar eventos para empresas y organizaciones.',
     },
-    email: 'info@b-events.es',
+    email: 'events@b-events.es',
     showPhonePublicly: false,
     legalName: 'Barbara Juan Portoles Events SL',
     nif: 'B93941276',

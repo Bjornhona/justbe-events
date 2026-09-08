@@ -19,7 +19,7 @@ En cumplimiento del artículo 10 de la Ley 34/2002, de servicios de la sociedad 
 - **Denominación social:** Barbara Juan Portoles Events, S.L.
 - **NIF:** B93941276
 - **Domicilio social:** Paseo de Sant Gervasio 57 bis, 3º 3ª, 08022 Barcelona, España
-- **Correo electrónico:** info@b-events.es
+- **Correo electrónico:** events@b-events.es
 - **Datos registrales:** Inscrita en el Registro Mercantil de Barcelona, [PENDIENTE: tomo, folio, hoja, inscripción]
 - **Nombre comercial:** B Events
 
@@ -62,7 +62,7 @@ Las presentes condiciones se rigen por la legislación española. Para cualquier
 - **Responsable:** Barbara Juan Portoles Events, S.L.
 - **NIF:** B93941276
 - **Domicilio:** Paseo de Sant Gervasio 57 bis, 3º 3ª, 08022 Barcelona, España
-- **Correo electrónico:** info@b-events.es
+- **Correo electrónico:** events@b-events.es
 
 ### Qué datos tratamos
 
@@ -114,7 +114,7 @@ Algunos de los proveedores indicados están establecidos fuera del Espacio Econ�
 
 ### Derechos del interesado
 
-Cualquier persona puede ejercer los derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad, así como retirar el consentimiento prestado, escribiendo a **info@b-events.es** e indicando el derecho que desea ejercer.
+Cualquier persona puede ejercer los derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad, así como retirar el consentimiento prestado, escribiendo a **events@b-events.es** e indicando el derecho que desea ejercer.
 
 Asimismo, tiene derecho a presentar una reclamación ante la Agencia Española de Protección de Datos (**www.aepd.es**), especialmente si considera que no ha obtenido satisfacción en el ejercicio de sus derechos.
 
