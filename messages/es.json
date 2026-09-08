@@ -33,6 +33,21 @@
       "description": "El día del evento: dirección en sala y todo lo que no se ve."
     }
   },
+  "Numbers": {
+    "yearsActive": "Años de experiencia",
+    "eventsDelivered": "Eventos realizados",
+    "attendeesTotal": "Asistentes",
+    "countriesCount": "Países"
+  },
+  "Forbes": {
+    "eyebrow": "Publicado en Forbes",
+    "readArticle": "Leer el artículo"
+  },
+  "Contact": {
+    "heading": "Cuéntanos tu evento",
+    "directHeading": "O escríbenos",
+    "whatsappLabel": "WhatsApp"
+  },
   "NotFound": {
     "title": "Esta página no existe",
     "body": "El enlace puede estar mal escrito o la página puede haberse movido.",

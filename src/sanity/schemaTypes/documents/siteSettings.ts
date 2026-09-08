@@ -8,6 +8,8 @@ export const siteSettings = defineType({
   type: 'document',
   groups: [
     {name: 'brand', title: 'Marca', default: true},
+    {name: 'numbers', title: 'Cifras'},
+    {name: 'press', title: 'Prensa'},
     {name: 'contact', title: 'Contacto'},
     {name: 'legal', title: 'Datos fiscales'},
     {name: 'meta', title: 'SEO'},
@@ -29,6 +31,63 @@ export const siteSettings = defineType({
       group: 'brand',
       description: 'Opcional. Cuando exista, sustituye a la imagen de cabecera.',
       options: {accept: 'video/*'},
+    }),
+
+    // --- cifras ---
+    // Todas opcionales y todas independientes: la web esconde la que esté
+    // vacía y no muestra la sección entera si no hay ninguna. Así se puede
+    // publicar una cifra en cuanto esté confirmada, sin esperar a las cuatro.
+    //
+    // Son recuentos: un decimal o un negativo aquí sería un error de tecleo,
+    // y se vería en portada a tamaño de titular.
+    defineField({name: 'yearsActive', title: 'Años de experiencia', type: 'number', group: 'numbers', validation: (Rule) => Rule.integer().min(0)}),
+    defineField({name: 'eventsDelivered', title: 'Eventos realizados', type: 'number', group: 'numbers', validation: (Rule) => Rule.integer().min(0)}),
+    defineField({name: 'attendeesTotal', title: 'Asistentes en total', type: 'number', group: 'numbers', validation: (Rule) => Rule.integer().min(0)}),
+    defineField({name: 'countriesCount', title: 'Países', type: 'number', group: 'numbers', validation: (Rule) => Rule.integer().min(0)}),
+
+    // --- prensa ---
+    defineField({
+      name: 'press',
+      title: 'Cita de prensa',
+      type: 'object',
+      group: 'press',
+      description:
+        'La cita solo aparece en la web si el campo "Cita" tiene texto. Vacíalo para retirar la sección.',
+      options: {collapsible: true, collapsed: false},
+      fields: [
+        defineField({
+          name: 'quote',
+          title: 'Cita',
+          type: 'localeString',
+        }),
+        defineField({
+          name: 'sourceName',
+          title: 'Medio',
+          type: 'string',
+          description: 'Por ejemplo: Forbes España, marzo de 2025.',
+        }),
+        defineField({
+          name: 'sourceUrl',
+          title: 'Enlace al artículo',
+          type: 'url',
+        }),
+        defineField({
+          name: 'portrait',
+          title: 'Retrato',
+          type: 'image',
+          options: {hotspot: true},
+          description: 'Opcional. Sin él la cita ocupa todo el ancho.',
+          fields: [
+            defineField({
+              name: 'alt',
+              title: 'Texto alternativo',
+              type: 'localeString',
+              description:
+                'Describe la foto para quien no puede verla. Déjalo vacío si es puramente decorativa.',
+            }),
+          ],
+        }),
+      ],
     }),
 
     defineField({name: 'email', title: 'Email', type: 'string', group: 'contact', initialValue: 'info@b-events.es'}),

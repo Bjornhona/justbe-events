@@ -58,6 +58,17 @@ const PILLAR_RANK = /* groq */ `
 
 // --- site settings -------------------------------------------------------
 
+/**
+ * The press quote. Every field is independently optional, but `quote` is the
+ * one that decides whether the section exists at all — see `Forbes`.
+ */
+export type Press = {
+  quote?: Maybe<LocaleString>
+  sourceName?: Maybe<string>
+  sourceUrl?: Maybe<string>
+  portrait?: Maybe<SanityImage>
+}
+
 export type SiteSettingsQueryResult = {
   _id: string
   brandName?: Maybe<string>
@@ -65,6 +76,12 @@ export type SiteSettingsQueryResult = {
   heroImage?: Maybe<SanityImage>
   /** Resolved CDN URL of the hero video, or null when none is uploaded. */
   heroVideoUrl?: Maybe<string>
+  /** The four home-page figures. Each is shown only if it has a value. */
+  yearsActive?: Maybe<number>
+  eventsDelivered?: Maybe<number>
+  attendeesTotal?: Maybe<number>
+  countriesCount?: Maybe<number>
+  press?: Maybe<Press>
   email?: Maybe<string>
   showPhonePublicly?: Maybe<boolean>
   /** Already gated on `showPhonePublicly` — null means do not render a phone. */
@@ -92,6 +109,16 @@ export const siteSettingsQuery = defineQuery(`
     tagline,
     heroImage { ${IMAGE_FIELDS} },
     "heroVideoUrl": heroVideo.asset->url,
+    yearsActive,
+    eventsDelivered,
+    attendeesTotal,
+    countriesCount,
+    press {
+      quote,
+      sourceName,
+      sourceUrl,
+      portrait { ${IMAGE_FIELDS} }
+    },
     email,
     showPhonePublicly,
     "phone": select(showPhonePublicly == true => phone),

@@ -33,6 +33,21 @@
       "description": "Event day: direction on the floor and everything that goes unseen."
     }
   },
+  "Numbers": {
+    "yearsActive": "Years in events",
+    "eventsDelivered": "Events delivered",
+    "attendeesTotal": "People hosted",
+    "countriesCount": "Countries"
+  },
+  "Forbes": {
+    "eyebrow": "Featured in Forbes",
+    "readArticle": "Read the article"
+  },
+  "Contact": {
+    "heading": "Tell us about your event",
+    "directHeading": "Or write to us",
+    "whatsappLabel": "WhatsApp"
+  },
   "NotFound": {
     "title": "This page does not exist",
     "body": "The link may be mistyped, or the page may have moved.",
