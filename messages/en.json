@@ -95,6 +95,9 @@
       "serverFailure": "We couldn't send your message. Please try again or email us at <mail>events@b-events.es</mail>."
     }
   },
+  "Legal": {
+    "lastUpdated": "Last updated"
+  },
   "NotFound": {
     "title": "This page does not exist",
     "body": "The link may be mistyped, or the page may have moved.",

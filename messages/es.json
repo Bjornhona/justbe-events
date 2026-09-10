@@ -95,6 +95,9 @@
       "serverFailure": "No hemos podido enviar tu mensaje. Inténtalo de nuevo o escríbenos a <mail>events@b-events.es</mail>."
     }
   },
+  "Legal": {
+    "lastUpdated": "Última actualización"
+  },
   "NotFound": {
     "title": "Esta página no existe",
     "body": "El enlace puede estar mal escrito o la página puede haberse movido.",
