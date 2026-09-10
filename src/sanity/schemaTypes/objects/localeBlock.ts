@@ -34,6 +34,9 @@ export const localeBlock = defineType({
           options: {hotspot: true},
           fields: [{name: 'alt', type: 'localeString', title: 'Texto alternativo'}],
         },
+        // Portable Text has no table type, so the processor table in the
+        // privacy policy is this object instead. Rendered as a definition list.
+        {type: 'processorList'},
       ],
     }),
   ),

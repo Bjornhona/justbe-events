@@ -42,6 +42,33 @@ export function pickLocale(
 }
 
 /**
+ * The same fallback rule for the array-valued locale fields — `localeBlock`,
+ * whose per-language values are Portable Text arrays rather than strings.
+ *
+ * Generic rather than typed to Portable Text on purpose: it keeps this module
+ * free of any dependency on the rendering layer, and the rule it encodes is
+ * about locales, not about blocks.
+ *
+ * An empty array counts as missing, exactly as an empty string does above. A
+ * language whose body has been created but never written falls back to Spanish
+ * rather than rendering a legal page with a heading and no text.
+ */
+export function pickLocaleArray<T>(
+  field: Partial<Record<Locale, T[] | null | undefined>> | null | undefined,
+  locale: Locale,
+): T[] {
+  if (!field) return []
+
+  const requested = field[locale]
+  if (requested && requested.length > 0) return requested
+
+  const fallback = field[DEFAULT_LOCALE]
+  if (fallback && fallback.length > 0) return fallback
+
+  return []
+}
+
+/**
  * Same fallback rule, but tells you whether anything was found at all — for the
  * places where an empty value should hide the whole element rather than render
  * an empty one.

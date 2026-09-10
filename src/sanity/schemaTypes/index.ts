@@ -3,6 +3,7 @@ import { type SchemaTypeDefinition } from 'sanity'
 import {localeString} from './objects/localeString'
 import {localeText} from './objects/localeText'
 import {localeBlock} from './objects/localeBlock'
+import {processorList} from './objects/processorList'
 import {seo} from './objects/seo'
 
 import {project} from './documents/project'
@@ -16,6 +17,7 @@ const schemaTypes = [
   localeString,
   localeText,
   localeBlock,
+  processorList,
   seo,
   // documents
   siteSettings,

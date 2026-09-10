@@ -1,6 +1,8 @@
+import type { PortableTextBlock } from '@portabletext/react'
 import { defineQuery } from 'next-sanity'
 
-import type { LocaleString, LocaleText } from './locale'
+import { client } from './client'
+import type { Locale, LocaleString, LocaleText } from './locale'
 
 /**
  * GROQ projections omit any attribute that evaluates to null, so anything the
@@ -214,3 +216,58 @@ export const featuredProjectsQuery = defineQuery(`
     order
   }
 `)
+
+// --- legal pages ---------------------------------------------------------
+
+/**
+ * The rich-text half of `localeBlock`: one Portable Text array per language,
+ * with the same "Spanish is written first, English arrives later" rule as every
+ * other locale field. Read it with `pickLocaleArray`, not by indexing directly,
+ * so a half-translated page falls back instead of rendering empty.
+ */
+export type LocaleBlocks = {
+  [K in Locale]?: Maybe<PortableTextBlock[]>
+}
+
+export type LegalPageQueryResult = {
+  title: LocaleString
+  body?: Maybe<LocaleBlocks>
+  /** `YYYY-MM-DD`, as Sanity's `date` type stores it. */
+  lastUpdated?: Maybe<string>
+} | null
+
+/**
+ * One legal page by slug — aviso legal, privacidad, cookies.
+ *
+ * The slug is not localised. `legalPage.slug` is generated from `title.es`, so
+ * there is a single document per policy and the localised *route* (/privacidad
+ * vs /privacy, from `routing.pathnames`) maps onto it. Callers pass the Sanity
+ * slug, not the URL segment the visitor sees.
+ */
+export const legalPageQuery = defineQuery(`
+  *[_type == "legalPage" && slug.current == $slug][0] {
+    title,
+    body,
+    lastUpdated
+  }
+`)
+
+/**
+ * Fetches one legal page, or null when no document has that slug — which is the
+ * normal state for a policy nobody has written yet, not an error. Callers decide
+ * between `notFound()` and rendering nothing.
+ *
+ * Plain `client.fetch` with `revalidate`, matching Contact and Footer: the
+ * `sanityFetch` helper needs <SanityLive /> mounted in the layout, and it is
+ * not. Five minutes is the same window those use — legal text changes rarely,
+ * and when it does it is not urgent to the second.
+ */
+export async function getLegalPage(
+  slug: string,
+): Promise<LegalPageQueryResult> {
+  return client.fetch<LegalPageQueryResult>(
+    legalPageQuery,
+    { slug },
+    { next: { revalidate: 300 } },
+  )
+}

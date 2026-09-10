@@ -10,6 +10,7 @@
     "seed": "tsx --env-file=.env.local scripts/seed.ts"
   },
   "dependencies": {
+    "@portabletext/react": "^8.0.1",
     "@sanity/image-url": "2",
     "@sanity/vision": "5",
     "next": "16.3.2",
