@@ -19,18 +19,36 @@
  * Point SANITY_STUDIO_DATASET at `development` while you build.
  */
 
+import {readFileSync} from 'node:fs'
+
+import {htmlToBlocks, randomKey} from '@portabletext/block-tools'
 import {createClient} from '@sanity/client'
+import {Schema} from '@sanity/schema'
+import {JSDOM} from 'jsdom'
+import MarkdownIt from 'markdown-it'
+
+/**
+ * `pnpm seed --dry-run` prints what would be written and commits nothing.
+ *
+ * Worth having on a script whose whole job is createOrReplace: the legal pages
+ * are converted from markdown by a hundred lines of parsing, and being able to
+ * read the blocks before they overwrite the published policies is the
+ * difference between catching a bad conversion and publishing one.
+ */
+const DRY_RUN = process.argv.includes('--dry-run')
 
 const required = ['NEXT_PUBLIC_SANITY_PROJECT_ID', 'SANITY_API_WRITE_TOKEN']
-for (const k of required) {
-  if (!process.env[k]) throw new Error(`Missing ${k} — check .env.local`)
+if (!DRY_RUN) {
+  for (const k of required) {
+    if (!process.env[k]) throw new Error(`Missing ${k} — check .env.local`)
+  }
 }
 
 const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'dry-run',
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'development',
   apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2026-09-01',
-  token: process.env.SANITY_API_WRITE_TOKEN!, // local only — never in Vercel
+  token: process.env.SANITY_API_WRITE_TOKEN || 'dry-run', // local only — never in Vercel
   useCdn: false,
 })
 
@@ -116,7 +134,255 @@ const projects = [
   },
 ]
 
+// ---------------------------------------------------------------------------
+// Legal pages
+//
+// The three policies are drafted as markdown in content/legal-{es,en}.md and
+// converted here. That direction is deliberate and one-way: the markdown is the
+// drafting format, Sanity is where the published text lives. Once Barbara has
+// corrected something in the Studio, re-running this WILL overwrite it —
+// createOrReplace, not patch. Treat it as a first import, not a sync.
+// ---------------------------------------------------------------------------
+
+/**
+ * The `_id` doubles as `slug.current`. The routes fetch by exactly these
+ * strings, so they are set explicitly rather than generated from the title —
+ * `legalPage.slug` generates from `title.es`, which would produce
+ * "1-aviso-legal" and 404 every legal route.
+ *
+ * Order matches the order of the `## ` sections in both files.
+ */
+const LEGAL_IDS = ['legal-notice', 'privacy', 'cookies'] as const
+type LegalId = (typeof LEGAL_IDS)[number]
+
+/**
+ * The default block schema, as shipped. The markdown only ever produces h3,
+ * paragraphs, bullet lists and `strong`, all of which `localeBlock` allows, so
+ * there is nothing to be gained by compiling the project's own schema here.
+ */
+const blockContentType = Schema.compile({
+  name: 'default',
+  types: [{name: 'blockContent', type: 'array', of: [{type: 'block'}]}],
+}).get('blockContent')
+
+// `typographer` stays off: it would rewrite quotes and dashes, and this is
+// legal text that should reach Sanity character-for-character as drafted.
+const md = new MarkdownIt()
+
+const parseHtml = (html: string) => new JSDOM(html).window.document
+
+/**
+ * The block shapes this script writes, spelled out rather than borrowed from
+ * block-tools' `TypedObject` — that type is just `{_type: string}`, so an object
+ * literal carrying `style` or `rows` fails excess-property checking against it.
+ * Writing them out also documents exactly what lands in the dataset.
+ */
+type PtSpan = {_type: 'span'; _key: string; text: string; marks: string[]}
+
+type PtTextBlock = {
+  _type: 'block'
+  _key: string
+  style: string
+  markDefs: never[]
+  children: PtSpan[]
+}
+
+type PtProcessorRow = {
+  _type: 'processorRow'
+  _key: string
+  provider: string
+  purpose: string
+}
+
+type PtProcessorList = {
+  _type: 'processorList'
+  _key: string
+  rows: PtProcessorRow[]
+}
+
+/** Anything that can appear in a legal page body. */
+type LegalBlock = PtTextBlock | PtProcessorList | {_type: string}
+
+const span = (text: string, marks: string[] = []): PtSpan => ({
+  _type: 'span',
+  _key: randomKey(12),
+  text,
+  marks,
+})
+
+const textBlock = (style: string, text: string): PtTextBlock => ({
+  _type: 'block',
+  _key: randomKey(12),
+  style,
+  markDefs: [],
+  children: [span(text)],
+})
+
+/** One `| a | b |` row split into trimmed cells. */
+function tableCells(line: string): string[] {
+  return line
+    .trim()
+    .replace(/^\||\|$/g, '')
+    .split('|')
+    .map((cell) => cell.trim())
+}
+
+/** `|---|---|` — the alignment row, which carries no content. */
+const isSeparatorRow = (line: string) =>
+  tableCells(line).every((cell) => /^:?-+:?$/.test(cell))
+
+/**
+ * Splits a section into runs of markdown and runs of table, so the table can be
+ * converted structurally while everything around it keeps its position.
+ */
+function splitOnTables(markdown: string) {
+  const parts: {kind: 'markdown' | 'table'; lines: string[]}[] = []
+
+  for (const line of markdown.split('\n')) {
+    const kind = line.trimStart().startsWith('|') ? 'table' : 'markdown'
+    const last = parts[parts.length - 1]
+    if (last && last.kind === kind) last.lines.push(line)
+    else parts.push({kind, lines: [line]})
+  }
+
+  return parts
+}
+
+/**
+ * A markdown table → Portable Text.
+ *
+ * PORTABLE TEXT HAS NO TABLE TYPE, so there are two conversions and which one
+ * applies depends on the table.
+ *
+ * The processor table in the privacy policy becomes a `processorList` object:
+ * its two columns are a name and what that provider is used for, the pairing is
+ * required by RGPD art. 13.1(e), and flattening it to prose would keep the words
+ * and lose the association. Its header row ("Proveedor | Finalidad") is chrome
+ * and is dropped.
+ *
+ * Any other table degrades to heading + paragraph pairs, one pair per row.
+ * Today there is no such table in either file — the processor table is the only
+ * one — so that branch is a guard against a future edit silently losing content
+ * rather than something currently exercised.
+ */
+function tableToBlocks(lines: string[], docId: LegalId): LegalBlock[] {
+  const rows = lines
+    .filter((line) => line.trim() !== '')
+    .filter((line) => !isSeparatorRow(line))
+    .map(tableCells)
+
+  if (rows.length === 0) return []
+
+  const isProcessorTable = docId === 'privacy' && rows[0].length === 2
+
+  if (isProcessorTable) {
+    return [
+      {
+        _type: 'processorList',
+        _key: randomKey(12),
+        // `slice(1)` drops the header row.
+        rows: rows.slice(1).map(([provider, purpose]) => ({
+          _type: 'processorRow',
+          _key: randomKey(12),
+          provider,
+          purpose,
+        })),
+      },
+    ]
+  }
+
+  return rows.slice(1).flatMap(([head, ...rest]) => [
+    textBlock('h3', head),
+    textBlock('normal', rest.join(' — ')),
+  ])
+}
+
+/**
+ * One `## ` section of markdown → Portable Text blocks.
+ *
+ * The trailing "**Última actualización:** [FECHA]" line is removed rather than
+ * converted. That placeholder was never meant to be published, and the date is
+ * now a real field on the document (`lastUpdated`) which the page renders
+ * itself — leaving the line in would print a literal "[FECHA]" under a policy
+ * that already shows its date.
+ *
+ * `[PENDIENTE: …]` and `[PENDING: …]` are deliberately NOT touched. They are
+ * genuinely missing data — the Registro Mercantil entry — and must survive to
+ * the Studio so that whoever fills them in can find them.
+ */
+function sectionToBlocks(section: string, docId: LegalId): LegalBlock[] {
+  const body = section
+    .split('\n')
+    .slice(1) // the `## ` heading itself becomes the title
+    .join('\n')
+    .replace(/^\*\*(Última actualización|Last updated):\*\*.*$/gm, '')
+    .replace(/\n---\s*$/, '') // the rule separating this section from the next
+    .trim()
+
+  return splitOnTables(body).flatMap((part) => {
+    const text = part.lines.join('\n').trim()
+    if (text === '') return []
+
+    return part.kind === 'table'
+      ? tableToBlocks(part.lines, docId)
+      : (htmlToBlocks(md.render(text), blockContentType, {
+          parseHtml,
+        }) as LegalBlock[])
+  })
+}
+
+/**
+ * Splits a file into its three `## ` sections and returns heading + body for
+ * each. Anything before the first `## ` — the "Borrador para revisión" note —
+ * is dropped, which is correct: it is a message to us, not to a visitor.
+ */
+function readLegalFile(path: string) {
+  const sections = readFileSync(path, 'utf8').split(/^## /m).slice(1)
+
+  if (sections.length !== LEGAL_IDS.length) {
+    throw new Error(
+      `${path}: expected ${LEGAL_IDS.length} "## " sections, found ${sections.length}`,
+    )
+  }
+
+  return sections.map((section, i) => ({
+    // "1. Aviso legal" → "Aviso legal". The number orders the sections inside
+    // the drafting file; on a page of its own it is meaningless.
+    title: section.split('\n')[0].trim().replace(/^\d+\.\s*/, ''),
+    blocks: sectionToBlocks(section, LEGAL_IDS[i]),
+  }))
+}
+
+/** The three documents, built but not written — see `--dry-run`. */
+function buildLegalDocs() {
+  const es = readLegalFile('content/legal-es.md')
+  const en = readLegalFile('content/legal-en.md')
+
+  const today = new Date().toISOString().slice(0, 10)
+
+  return LEGAL_IDS.map((id, i) => ({
+    _id: id,
+    _type: 'legalPage',
+    title: {es: es[i].title, en: en[i].title},
+    slug: {_type: 'slug', current: id},
+    body: {es: es[i].blocks, en: en[i].blocks},
+    lastUpdated: today,
+  }))
+}
+
+function seedLegal(tx: ReturnType<typeof client.transaction>) {
+  const docs = buildLegalDocs()
+  docs.forEach((doc) => tx.createOrReplace(doc))
+  return docs.length
+}
+
 async function seed() {
+  if (DRY_RUN) {
+    console.log(JSON.stringify(buildLegalDocs(), null, 2))
+    console.error('\n--dry-run: nothing was written.')
+    return
+  }
+
   const tx = client.transaction()
 
   tx.createOrReplace({
@@ -164,8 +430,12 @@ async function seed() {
     })
   })
 
+  const legalCount = seedLegal(tx)
+
   await tx.commit()
-  console.log(`Seeded: settings, ${services.length} services, ${projects.length} projects`)
+  console.log(
+    `Seeded: settings, ${services.length} services, ${projects.length} projects, ${legalCount} legal pages`,
+  )
   console.log('Images are not seeded — add them in the Studio.')
 }
 
