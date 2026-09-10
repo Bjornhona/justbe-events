@@ -17,7 +17,7 @@ In accordance with article 10 of Spanish Law 34/2002 on information society serv
 - **Company name:** Barbara Juan Portoles Events, S.L.
 - **Tax ID (NIF):** B93941276
 - **Registered address:** Paseo de Sant Gervasio 57 bis, 3º 3ª, 08022 Barcelona, Spain
-- **Email:** events@b-events.es
+- **Email:** barbara@b-events.es
 - **Registry details:** Registered at the Companies Register of Barcelona, [PENDING: volume, folio, sheet, entry]
 - **Trading name:** B Events
 
@@ -60,7 +60,7 @@ These terms are governed by Spanish law. Any dispute shall be submitted to the c
 - **Controller:** Barbara Juan Portoles Events, S.L.
 - **Tax ID (NIF):** B93941276
 - **Address:** Paseo de Sant Gervasio 57 bis, 3º 3ª, 08022 Barcelona, Spain
-- **Email:** events@b-events.es
+- **Email:** barbara@b-events.es
 
 ### What data we process
 
@@ -82,6 +82,7 @@ No special categories of data are collected. Please do not include sensitive inf
 - To respond to the enquiry received.
 - To prepare and send a service proposal where appropriate.
 - To maintain the communication arising from that enquiry.
+- To record the enquiry in our customer relationship management system (CRM) so that it can be followed up.
 
 Data is not used for unsolicited marketing and is not shared with third parties for advertising purposes.
 
@@ -94,7 +95,7 @@ Data is not used for unsolicited marketing and is not shared with third parties 
 
 Data is retained for as long as the relationship or interest in the service continues and thereafter for the periods legally required for the limitation of liability. Once those periods have elapsed, the data is deleted.
 
-Where an enquiry does not lead to a commercial relationship, the data is deleted within a maximum of one year from the last contact.
+Data held in the CRM is retained for as long as commercial interest continues and is reviewed periodically. Where an enquiry does not lead to a commercial relationship, the data — including the data held in the CRM — is deleted within a maximum of one year from the last contact.
 
 ### Recipients and processors
 
@@ -109,11 +110,11 @@ Data is not disclosed to third parties except where legally required. The follow
 
 ### International transfers
 
-Some of the above providers are established outside the European Economic Area. Such transfers rely on the standard contractual clauses approved by the European Commission or on applicable adequacy decisions.
+Some of the providers listed, in particular HubSpot, Inc., are established in the United States. Such transfers rely on the standard contractual clauses approved by the European Commission or on the EU-US Data Privacy Framework, as applicable.
 
 ### Your rights
 
-Any person may exercise the rights of access, rectification, erasure, objection, restriction of processing and portability, and may withdraw consent, by writing to **events@b-events.es** stating the right they wish to exercise.
+Any person may exercise the rights of access, rectification, erasure, objection, restriction of processing and portability, and may withdraw consent, by writing to **barbara@b-events.es** stating the right they wish to exercise.
 
 You also have the right to lodge a complaint with the Spanish Data Protection Agency (**www.aepd.es**), in particular if you consider that your request has not been satisfactorily resolved.
 

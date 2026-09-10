@@ -19,7 +19,7 @@ En cumplimiento del artículo 10 de la Ley 34/2002, de servicios de la sociedad 
 - **Denominación social:** Barbara Juan Portoles Events, S.L.
 - **NIF:** B93941276
 - **Domicilio social:** Paseo de Sant Gervasio 57 bis, 3º 3ª, 08022 Barcelona, España
-- **Correo electrónico:** events@b-events.es
+- **Correo electrónico:** barbara@b-events.es
 - **Datos registrales:** Inscrita en el Registro Mercantil de Barcelona, [PENDIENTE: tomo, folio, hoja, inscripción]
 - **Nombre comercial:** B Events
 
@@ -62,7 +62,7 @@ Las presentes condiciones se rigen por la legislación española. Para cualquier
 - **Responsable:** Barbara Juan Portoles Events, S.L.
 - **NIF:** B93941276
 - **Domicilio:** Paseo de Sant Gervasio 57 bis, 3º 3ª, 08022 Barcelona, España
-- **Correo electrónico:** events@b-events.es
+- **Correo electrónico:** barbara@b-events.es
 
 ### Qué datos tratamos
 
@@ -84,6 +84,7 @@ No se recogen categorías especiales de datos. Se ruega no incluir información 
 - Atender la solicitud de información realizada.
 - Elaborar y remitir, en su caso, una propuesta de servicios.
 - Mantener la comunicación derivada de esa solicitud.
+- Registrar la solicitud en nuestro sistema de gestión de clientes (CRM) para poder darle seguimiento.
 
 Los datos no se utilizan para envíos comerciales no solicitados ni se ceden a terceros con fines publicitarios.
 
@@ -96,7 +97,7 @@ Los datos no se utilizan para envíos comerciales no solicitados ni se ceden a t
 
 Los datos se conservan mientras se mantenga la relación o el interés en el servicio y, posteriormente, durante los plazos legalmente exigidos para la prescripción de responsabilidades. Transcurridos dichos plazos, se suprimen.
 
-Si la solicitud no da lugar a una relación comercial, los datos se suprimen en el plazo máximo de un año desde el último contacto.
+Los datos registrados en el CRM se conservan mientras exista interés comercial y se revisan periódicamente. Si la solicitud no da lugar a una relación comercial, los datos —incluidos los registrados en el CRM— se suprimen en el plazo máximo de un año desde el último contacto.
 
 ### Destinatarios y encargados del tratamiento
 
@@ -111,11 +112,11 @@ No se ceden datos a terceros, salvo obligación legal. Se utilizan los siguiente
 
 ### Transferencias internacionales
 
-Algunos de los proveedores indicados están establecidos fuera del Espacio Económico Europeo. Dichas transferencias se amparan en las cláusulas contractuales tipo aprobadas por la Comisión Europea o en decisiones de adecuación vigentes.
+Algunos de los proveedores indicados, en particular HubSpot, Inc., están establecidos en Estados Unidos. Dichas transferencias se amparan en las cláusulas contractuales tipo aprobadas por la Comisión Europea o en el Data Privacy Framework UE-EE. UU., según corresponda.
 
 ### Derechos del interesado
 
-Cualquier persona puede ejercer los derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad, así como retirar el consentimiento prestado, escribiendo a **events@b-events.es** e indicando el derecho que desea ejercer.
+Cualquier persona puede ejercer los derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad, así como retirar el consentimiento prestado, escribiendo a **barbara@b-events.es** e indicando el derecho que desea ejercer.
 
 Asimismo, tiene derecho a presentar una reclamación ante la Agencia Española de Protección de Datos (**www.aepd.es**), especialmente si considera que no ha obtenido satisfacción en el ejercicio de sus derechos.
 
