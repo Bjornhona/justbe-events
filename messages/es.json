@@ -77,7 +77,6 @@
     "successBody": "Te responderemos lo antes posible, normalmente en menos de 48 horas laborables.",
     "successAgain": "Enviar otro mensaje",
     "errorTitle": "No hemos podido enviar tu mensaje",
-    "errorSummary": "Revisa los campos marcados.",
     "errors": {
       "firstNameRequired": "Escribe tu nombre.",
       "lastNameRequired": "Escribe tus apellidos.",
@@ -91,11 +90,9 @@
       "messageRequired": "Cuéntanos algo más sobre tu evento (mínimo 10 caracteres).",
       "consentRequired": "Necesitamos tu consentimiento para poder responderte.",
       "tooLong": "Este texto es demasiado largo.",
-      "badRequest": "No hemos podido procesar el formulario. Inténtalo de nuevo.",
-      "rateLimited": "Has enviado varios mensajes seguidos. Espera unos minutos e inténtalo de nuevo.",
       "validation": "Revisa los campos marcados.",
-      "server": "Ha ocurrido un error al enviar el mensaje. Inténtalo de nuevo o escríbenos directamente por correo.",
-      "network": "No hemos podido conectar. Comprueba tu conexión e inténtalo de nuevo."
+      "rateLimited": "Has enviado varios mensajes seguidos. Espera unos minutos e inténtalo de nuevo.",
+      "serverFailure": "No hemos podido enviar tu mensaje. Inténtalo de nuevo o escríbenos a <mail>events@b-events.es</mail>."
     }
   },
   "NotFound": {

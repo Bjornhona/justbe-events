@@ -39,6 +39,41 @@ import {
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
 
+/**
+ * The mailbox the failure message offers as a way round a broken form.
+ *
+ * Must match the address written inside `<mail>…</mail>` in both catalogues —
+ * that is the visible text, this is the href. It is also the address the
+ * privacy policy names for exercising RGPD rights, so if it ever changes it
+ * changes in `content/legal-*.md` too, not only here.
+ */
+const CONTACT_EMAIL = 'events@b-events.es'
+
+/**
+ * Failure key → the message shown for it.
+ *
+ * The route and the catch block between them produce five keys, but there are
+ * only three things worth saying: fix your input, you are going too fast, or
+ * something on our side broke and here is another way to reach us. `server`,
+ * `network` and `badRequest` are all the third case — the visitor can do
+ * nothing about the difference between them, and naming it would only be
+ * alarming.
+ *
+ * Anything unrecognised falls through to the same message, so a new key added
+ * to the route later fails soft with sensible copy instead of throwing a
+ * MISSING_MESSAGE at the one moment the form is already broken.
+ */
+const FORM_ERROR_MESSAGE: Record<string, string> = {
+  validation: 'validation',
+  rateLimited: 'rateLimited',
+  server: 'serverFailure',
+  network: 'serverFailure',
+  badRequest: 'serverFailure',
+}
+
+const formErrorMessage = (key: string) =>
+  FORM_ERROR_MESSAGE[key] ?? 'serverFailure'
+
 /** `<input type="date">` speaks `YYYY-MM-DD`, and so does the schema. */
 function todayIso(): string {
   return new Date().toISOString().slice(0, 10)
@@ -83,6 +118,24 @@ export default function ContactForm() {
     const next = { ...values, [name]: value }
     setValues(next)
 
+    // The form-level box describes the *previous* attempt, and the moment the
+    // visitor edits anything that description is out of date. Without this it
+    // outlives what it reported: "check the highlighted fields" stays on screen
+    // after the last highlighted field has been fixed, and a server or network
+    // failure keeps being announced while the visitor is already retyping.
+    //
+    // This clears `formError` whatever it holds — `validation` and the
+    // server-side keys (`server`, `network`, `rateLimited`, `badRequest`) all
+    // render through the same gate and all go stale for the same reason.
+    //
+    // Field-level errors are deliberately NOT cleared wholesale here. Each one
+    // is re-checked below and clears only once its own field is actually valid,
+    // so correcting one field never hides a problem in another.
+    if (status === 'error') {
+      setStatus('idle')
+      setFormError(null)
+    }
+
     if (!submitted) return
 
     const result = validateContact(next)
@@ -106,6 +159,13 @@ export default function ContactForm() {
     event.preventDefault()
 
     setSubmitted(true)
+
+    // Retract the previous attempt's verdict before this one is judged, so the
+    // old reason can never be read as belonging to the new submission. Both are
+    // reset: `status` alone would leave a stale key behind, and `formError`
+    // alone would leave `status` stuck on 'error'. React batches these with
+    // whatever the outcome sets below, so there is no flicker in between.
+    setStatus('idle')
     setFormError(null)
 
     // Client-side gate. The consent box is part of this, so an unticked box
@@ -555,8 +615,28 @@ export default function ContactForm() {
           role="alert"
           className="text-small mt-6 rounded-sm border-l-2 border-red-700 bg-red-50 p-4 text-red-900"
         >
-          <p className="font-semibold">{t('errorTitle')}</p>
-          <p className="mt-1">{t(`errors.${formError}`)}</p>
+          {/* The heading is only shown for the validation case. "Revisa los
+              campos marcados" is a fragment and needs the framing; the other
+              two messages are complete sentences that already open by saying
+              the message could not be sent, so printing the title above them
+              would say it twice. */}
+          {formError === 'validation' && (
+            <p className="font-semibold">{t('errorTitle')}</p>
+          )}
+          <p className={formError === 'validation' ? 'mt-1' : undefined}>
+            {/* `t.rich` rather than `t`, because the server message carries a
+                <mail> tag. It is harmless on the messages that have no tags. */}
+            {t.rich(`errors.${formErrorMessage(formError)}`, {
+              mail: (chunks) => (
+                <a
+                  href={`mailto:${CONTACT_EMAIL}`}
+                  className="rounded-xs font-medium underline underline-offset-4 hover:no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
+                >
+                  {chunks}
+                </a>
+              ),
+            })}
+          </p>
         </div>
       )}
 
