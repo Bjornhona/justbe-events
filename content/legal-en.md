@@ -105,6 +105,7 @@ Data is not disclosed to third parties except where legally required. The follow
 | Vercel Inc. | Website hosting and technical server logs |
 | Sanity AS | Website content management |
 | Namecheap Inc. | Corporate email service |
+| HubSpot, Inc. | Customer relationship management: storing enquiries received through the contact form and subsequent commercial follow-up |
 
 ### International transfers
 

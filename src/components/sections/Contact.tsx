@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 
+import ContactForm from '@/components/ContactForm'
 import Reveal from '@/components/Reveal'
 import Section from '@/components/Section'
 import { client } from '@/sanity/lib/client'
@@ -12,7 +13,7 @@ const LINK_CLASS =
   'rounded-xs underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jb-700'
 
 /**
- * Server Component. The end of the page and the point of it — `contacto` is
+ * Server Component. The end of the page and the point of it — `contact` is
  * where the hero's call to action lands, so the id has to match `SECTIONS`.
  *
  * The direct details sit beside the form rather than replacing it: a form is
@@ -40,7 +41,7 @@ export default async function Contact() {
   const phone = settings?.showPhonePublicly ? settings.phone : null
 
   return (
-    <Section id="contacto" tone="paper">
+    <Section id="section-contact" tone="paper">
       <Reveal>
         <h2 className="font-display text-h2 text-ink max-w-[16ch] font-light text-balance">
           {t('heading')}
@@ -48,8 +49,10 @@ export default async function Contact() {
 
         <div className="mt-12 grid gap-12 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] md:gap-16">
           <div>
-            {/* FORM GOES HERE — built in the next step. It owns this column;
-                the details beside it are deliberately not part of it. */}
+            {/* Owns this column; the details beside it are deliberately not
+                part of it. The only Client Component on the page — it posts to
+                /api/contact and loads no third-party script. */}
+            <ContactForm />
           </div>
 
           <div>

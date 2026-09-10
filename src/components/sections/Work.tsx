@@ -39,7 +39,7 @@ export default async function Work() {
   if (projects.length === 0) return null
 
   return (
-    <Section id="proyectos" tone="alt">
+    <Section id="section-projects" tone="alt">
       <Reveal>
         <div className="grid gap-x-12 gap-y-16 sm:grid-cols-2">
           {projects.slice(0, MAX_CARDS).map((project) => {

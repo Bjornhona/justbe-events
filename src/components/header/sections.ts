@@ -11,9 +11,9 @@
  * top of the heading when an anchor is followed.
  */
 export const SECTIONS = [
-  { id: 'servicios', key: 'services' },
-  { id: 'proyectos', key: 'projects' },
-  { id: 'contacto', key: 'contact' },
+  { id: 'section-services', key: 'services' },
+  { id: 'section-projects', key: 'projects' },
+  { id: 'section-contact', key: 'contact' },
 ] as const
 
 export type SectionKey = (typeof SECTIONS)[number]['key']

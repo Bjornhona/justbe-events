@@ -43,7 +43,7 @@ export default async function Pillars() {
   const locale: Locale = requestedLocale === 'en' ? 'en' : 'es'
 
   return (
-    <Section id="servicios" tone="paper">
+    <Section id="section-services" tone="paper">
       <Reveal>
         <div className="grid gap-16 md:grid-cols-3 md:gap-0">
           {PILLARS.map((pillar, i) => {

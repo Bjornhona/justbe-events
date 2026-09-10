@@ -107,6 +107,7 @@ No se ceden datos a terceros, salvo obligación legal. Se utilizan los siguiente
 | Vercel Inc. | Alojamiento del sitio web y registros técnicos del servidor |
 | Sanity AS | Gestión de los contenidos del sitio |
 | Namecheap Inc. | Servicio de correo electrónico corporativo |
+| HubSpot, Inc. | Gestión de la relación con clientes: conservación de las solicitudes recibidas a través del formulario y seguimiento comercial posterior |
 
 ### Transferencias internacionales
 

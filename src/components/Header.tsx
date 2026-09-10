@@ -18,7 +18,7 @@ import { SECTIONS } from './header/sections'
 export default async function Header() {
   const t = await getTranslations('Nav')
 
-  // `{pathname: '/', hash}` rather than a bare `#servicios`: the header also
+  // `{pathname: '/', hash}` rather than a bare `#services`: the header also
   // renders on the legal pages, where those sections do not exist and a bare
   // fragment would be a link that visibly does nothing. This form scrolls when
   // already home, and navigates home first when it isn't.

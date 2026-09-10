@@ -35,7 +35,7 @@ export default async function Hero() {
 
           <p className="mt-10 text-center sm:text-left">
             <Link
-              href={{ pathname: '/', hash: 'contacto' }}
+              href={{ pathname: '/', hash: 'section-contact' }}
               className="text-jb-700 group relative inline-block rounded-xs focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current"
             >
               {t('cta')}
