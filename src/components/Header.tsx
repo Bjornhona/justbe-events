@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 
+import Logo from '@/components/Logo'
 import { Link } from '@/i18n/routing'
 
 import { HeaderShell } from './header/HeaderShell'
@@ -31,11 +32,13 @@ export default async function Header() {
   return (
     <HeaderShell>
       <Link
-        href="/"
+        href={{pathname: "/", hash: "#main"}}
         aria-label={t('home')}
         className="rounded-xs text-lg font-semibold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current"
       >
-        B Events
+        {/* The link keeps its own aria-label, which is the logo's accessible
+            name — the SVG itself is aria-hidden. */}
+        <Logo className="w-28 sm:w-32" />
       </Link>
 
       {/* Desktop */}

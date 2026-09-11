@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 
+import Logo from '@/components/Logo'
 import { Link } from '@/i18n/routing'
 import { client } from '@/sanity/lib/client'
 import {
@@ -63,6 +64,26 @@ export default async function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="flex flex-col gap-12 sm:flex-row sm:justify-between">
           <section>
+            {/* Back to top. A plain fragment link to the <main> landmark rather
+                than an onClick handler, which keeps this file free of client
+                JavaScript and means it still works before hydration and with JS
+                off. `scroll-behavior: smooth` in globals.css does the easing,
+                and already turns itself off under prefers-reduced-motion.
+
+                `#main` and not `/`: the footer renders on the legal pages too,
+                where "back to top" should return to the top of what you are
+                reading, not leave for the home page. The header wordmark is the
+                link home. The Logo is aria-hidden, so the name lives here. */}
+            <Link
+              href={{
+                pathname: "/",
+                hash: "#main"
+              }}
+              aria-label={t('backToTop')}
+              className="mb-6 inline-block rounded-xs transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-jb-700"
+            >
+              <Logo variant="mark" className="w-10" />
+            </Link>
             <h2 className="text-xs font-semibold tracking-widest text-ink-muted uppercase">
               {t('contactHeading')}
             </h2>

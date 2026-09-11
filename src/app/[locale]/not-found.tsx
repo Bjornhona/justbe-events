@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 
+import Logo from '@/components/Logo'
 import { Link } from '@/i18n/routing'
 
 /**
@@ -15,6 +16,7 @@ export default async function NotFound() {
 
   return (
     <section className="mx-auto flex min-h-[70vh] max-w-2xl flex-col items-center justify-center gap-5 px-6 pt-18 text-center">
+      <Logo variant="mark" className="w-12" />
       <p className="text-sm font-semibold tracking-widest text-jb-700 uppercase">
         404
       </p>

@@ -104,6 +104,7 @@
     "back": "Volver al inicio"
   },
   "Footer": {
+    "backToTop": "Volver arriba",
     "contactHeading": "Contacto",
     "emailLabel": "Email",
     "phoneLabel": "Teléfono",
