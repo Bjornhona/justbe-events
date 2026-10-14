@@ -27,10 +27,9 @@ const cormorantGaramond = Cormorant_Garamond({
   display: "swap",
 });
 
-// TODO — LAUNCH DAY, three changes, all at the same time:
-//   1. remove COMING_SOON from Vercel (Production)
-//   2. set NEXT_PUBLIC_SITE_LIVE=true in Vercel (Production)
-//   3. delete `src/app/coming-soon/` and the COMING_SOON branch in `src/proxy.ts`
+// TODO — LAUNCH DAY: see the full list in `src/app/robots.ts`. In short:
+// drop SITE_GATE and PREVIEW_KEY from Vercel, set NEXT_PUBLIC_SITE_LIVE=true,
+// and delete the coming-soon half of the gate. Maintenance mode stays.
 // Revisit this together with `src/app/robots.ts`. The two are a matched pair:
 // robots.txt asks crawlers not to look; this meta tag tells the ones that looked
 // anyway not to index. After the first production deploy, view source on
