@@ -57,7 +57,6 @@ export default function Logo({
 }: {
   /** `wordmark` is the full B·Events lockup; `mark` is the circular badge. */
   variant?: LogoVariant
-  /** Sizing only — width is what you want to set; height follows the viewBox. */
   className?: string
 }) {
   if (variant === 'mark') {
@@ -69,11 +68,9 @@ export default function Logo({
         focusable="false"
         className={className}
       >
-        <circle cx="50" cy="50" r="50" fill="#0FB5AE" />
-        {/* Reversed out of the disc. `var(--color-paper)` rather than white so
-            the counters match the page it sits on. */}
+        <circle cx="50" cy="50" r="50" fill="var(--color-jb-500)" />
         <g transform={MARK_TRANSFORM}>
-          <path d={B_PATH} fill="var(--color-paper)" />
+          <path d={B_PATH} fill="var(--color-ink)" />
         </g>
       </svg>
     )
