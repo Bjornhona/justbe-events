@@ -13,7 +13,8 @@ const intlProxy = createMiddleware(routing)
 // visitor who was sent a deep link still has it when the gate comes down.
 //
 //   "coming-soon"   holding page, 200. Goes on launch day, along with this
-//                   branch, the PREVIEW_KEY bypass and `src/app/api/preview/`.
+//                   branch, the PREVIEW_KEY bypass, `src/app/api/preview/` and
+//                   `src/app/gate/access/`.
 //   "maintenance"   same page, different sentence, 503 + Retry-After. This one
 //                   is meant to outlive launch: it is how the site gets taken
 //                   down for ten minutes without anybody deploying a branch.
@@ -32,11 +33,17 @@ function isExemptFromGate(request: NextRequest) {
     pathname.startsWith('/studio/') || // embedded Sanity Studio
     pathname === '/api' ||
     pathname.startsWith('/api/') || // route handlers, incl. the preview bypass
+    // The login form and the handler it posts to. Both are also outside the
+    // `matcher` below, so this branch is belt and braces — but it is the one
+    // that says why: rewriting the way in to the gate would close the gate on
+    // the person holding the password.
+    pathname === '/gate/access' ||
+    pathname === '/api/preview' ||
     pathname.startsWith('/_next/') ||
     pathname.startsWith('/_vercel/') ||
     pathname.includes('.') || // static assets: favicon, og images, robots.txt
-    // Whoever has been given the preview URL. The cookie is set by
-    // `/api/preview?key=…` and is the only thing that opens the gate from
+    // Whoever has been given the password. The cookie is set by
+    // `POST /api/preview` and is the only thing that opens the gate from
     // outside; see that route for why there is nothing stronger here.
     request.cookies.get(PREVIEW_COOKIE)?.value === '1'
   )

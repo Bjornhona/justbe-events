@@ -1,36 +1,36 @@
 import { createHash, timingSafeEqual } from 'node:crypto'
-import { notFound } from 'next/navigation'
 import { NextResponse, type NextRequest } from 'next/server'
 
 /**
  * Preview bypass for the site gate — DELETE THIS DIRECTORY ON LAUNCH DAY,
- * together with the coming-soon mode. See the list in `src/app/robots.ts`.
+ * together with the coming-soon mode and `src/app/gate/access/`. See the list
+ * in `src/app/robots.ts`.
  *
- * Visiting `/api/preview?key=<PREVIEW_KEY>` drops a cookie that makes
- * `src/proxy.ts` let you past the holding page, then sends you to the home
- * page. `?key=off` gives the cookie back. That is the whole protocol: there is
- * no login form, no session, no list of users.
+ * `POST /api/preview` with a `password` field — the form on `/gate/access` is
+ * the only thing that posts here — drops a cookie that makes `src/proxy.ts`
+ * let you past the holding page, then sends you to the home page.
+ * `GET /api/preview?key=off` gives the cookie back. That is the whole protocol:
+ * no session, no list of users, one shared password.
  *
- * ── THE URL IS THE SECRET ──────────────────────────────────────────────────
- * Nothing on the site links here, and nothing should. The client gets the URL
- * once, out of band; anybody who has it is in. That is the right strength for
- * what is behind it — an unfinished marketing site, not customer data — and it
- * is the reason for the two rules below.
+ * ── THE PASSWORD IS THE SECRET ─────────────────────────────────────────────
+ * PREVIEW_KEY is handed to the client out of band, once; anybody who has it is
+ * in. That is the right strength for what is behind it — an unfinished
+ * marketing site, not customer data.
  *
- * 1. EVERY FAILURE IS A 404, never a 401 or a 403. A 401 says "this route
- *    exists and you guessed wrong", which turns a URL nobody knows about into
- *    a URL worth guessing at. A 404 is indistinguishable from the thousands of
- *    other paths that do not exist, so a scanner learns nothing and moves on.
- *    An unset PREVIEW_KEY is a 404 for the same reason: on a deploy where the
- *    bypass was never configured, the route should not exist at all.
+ * A wrong password redirects back to the form with `?error=1` rather than
+ * answering 401/403/404. The login page is linked from the gate, so hiding the
+ * route's existence buys nothing, and the one person expected to use it needs
+ * to be able to tell "wrong password" from "broken site". An unset PREVIEW_KEY
+ * takes the same path: on a deploy where the bypass was never configured,
+ * there is no password that works, and nothing to say about why.
  *
- * 2. The comparison is timing-safe. Both sides are hashed first so the buffers
- *    are always 32 bytes — `timingSafeEqual` throws on a length mismatch, and
- *    a thrown error would leak the key's length through the status code.
+ * The comparison is timing-safe. Both sides are hashed first so the buffers are
+ * always 32 bytes — `timingSafeEqual` throws on a length mismatch, and a thrown
+ * error would leak the password's length through the response.
  * ───────────────────────────────────────────────────────────────────────────
  */
 
-// Reads a query param and sets a cookie, so it can never be prerendered.
+// Reads the request and sets a cookie, so it can never be prerendered.
 // Node rather than edge because `node:crypto` is what does the comparison.
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -45,43 +45,54 @@ function matches(provided: string, expected: string) {
   )
 }
 
-export async function GET(request: NextRequest) {
-  const key = request.nextUrl.searchParams.get('key')
-
-  // 303 rather than the default 307: the browser has done the one thing this
-  // URL is for, and should now GET the home page rather than hold on to a
-  // redirect it might repeat. `no-store` keeps the secret URL out of any
-  // cache between here and the visitor.
-  const home = NextResponse.redirect(new URL('/', request.url), {
+// 303 for both outcomes: the browser has posted the form and should now GET
+// wherever it lands, rather than hold on to a redirect it might repeat.
+// `no-store` keeps the password's verdict out of any cache in between.
+function redirectTo(path: string, request: NextRequest) {
+  return NextResponse.redirect(new URL(path, request.url), {
     status: 303,
     headers: { 'Cache-Control': 'no-store' },
   })
+}
 
-  // Handing the cookie back needs no key — you can always stop previewing,
-  // and requiring the secret to undo would mean needing it twice.
-  if (key === 'off') {
-    home.cookies.delete(COOKIE_NAME)
-    return home
-  }
-
+export async function POST(request: NextRequest) {
+  const password = (await request.formData()).get('password')
   const expected = process.env.PREVIEW_KEY
 
-  if (!key || !expected || !matches(key, expected)) {
-    notFound()
+  if (typeof password !== 'string' || !expected || !matches(password, expected)) {
+    return redirectTo('/gate/access?error=1', request)
   }
+
+  const home = redirectTo('/', request)
 
   home.cookies.set(COOKIE_NAME, '1', {
     // Nothing client-side reads this; it exists for the proxy.
     httpOnly: true,
     // Off in local dev, where there is no https to send it over.
     secure: process.env.NODE_ENV === 'production',
-    // The cookie has to survive arriving from whatever the client was sent
-    // the URL in — mail, WhatsApp — so `strict` would mean the first click
-    // lands back on the holding page.
+    // `strict` would mean the cookie is withheld on a navigation that arrives
+    // from off-site, so the first click after following a link to the login
+    // page would land back on the holding page.
     sameSite: 'lax',
     path: '/',
     maxAge: COOKIE_MAX_AGE,
   })
+
+  return home
+}
+
+// Handing the cookie back needs no password — you can always stop previewing,
+// and requiring the secret to undo would mean needing it twice. A GET so it
+// stays something you can do from the address bar.
+export async function GET(request: NextRequest) {
+  // Anything else arriving by GET — a bookmark of the old `?key=` URL, somebody
+  // typing the path — is sent to the form, which is now where you get in.
+  if (request.nextUrl.searchParams.get('key') !== 'off') {
+    return redirectTo('/gate/access', request)
+  }
+
+  const home = redirectTo('/', request)
+  home.cookies.delete(COOKIE_NAME)
 
   return home
 }

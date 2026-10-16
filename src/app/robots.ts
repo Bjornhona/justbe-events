@@ -4,15 +4,17 @@ import type { MetadataRoute } from 'next'
  * TODO — LAUNCH DAY, four changes, all at the same time:
  *   1. remove SITE_GATE and PREVIEW_KEY from Vercel (Production)
  *   2. set NEXT_PUBLIC_SITE_LIVE=true in Vercel (Production)
- *   3. delete `src/app/api/preview/` — the bypass only exists to get past the
- *      holding page, and an undocumented cookie-setting route that outlives
- *      its reason is just an opening nobody is watching
- *   4. delete the `coming-soon` case in `src/proxy.ts` and its branch in
- *      `src/app/gate/page.tsx`
+ *   3. delete `src/app/api/preview/` and `src/app/gate/access/` — the bypass
+ *      only exists to get past the holding page, and a cookie-setting route
+ *      behind a shared password that outlives its reason is just an opening
+ *      nobody is watching
+ *   4. delete the `coming-soon` case in `src/proxy.ts`, its branch in
+ *      `src/app/gate/page.tsx`, and the "Acceder" link on that page
  *
- * WHAT STAYS: `maintenance`. `src/app/gate/` and the maintenance case are not
- * launch scaffolding — they are how the site gets closed for ten minutes
- * without a deploy. Keep the `/gate` disallow below with them.
+ * WHAT STAYS: `maintenance`. `src/app/gate/` itself and the maintenance case
+ * are not launch scaffolding — they are how the site gets closed for ten
+ * minutes without a deploy. Keep the `/gate` disallow below with them; it
+ * covers `/gate/access` too, for as long as that exists.
  *
  * Then verify on production: https://b-events.es/robots.txt says `Allow: /`
  * rather than `Disallow: /`, and view-source on the homepage has no `noindex`
