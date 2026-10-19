@@ -41,3 +41,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# claude code — per-machine overrides. Holds an absolute PATH pinning this
+# machine's arm64 Node, so it is not shareable. Team-wide settings, if we ever
+# want any, go in .claude/settings.json instead, which IS committed.
+.claude/settings.local.json
