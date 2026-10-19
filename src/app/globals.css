@@ -44,13 +44,22 @@
 
   /* Type scale — five steps, fluid between 375px and 1440px.
    * Tailwind pairs each `--text-*` with its `--line-height` / `--letter-spacing`
-   * siblings, so `text-display` carries its leading and tracking with it. */
+   * siblings, so `text-display` carries its leading and tracking with it.
+   *
+   * TRACKING. The display steps are negative because Clash Display is a wide
+   * face with a tall x-height: at the same px it reads larger and looser than
+   * the Cormorant it replaced, and at 8.5rem the default spacing opens visible
+   * gaps between letters. The sizes themselves are unchanged — the correction
+   * is tracking only, so the clamp() still lines up with the layout widths it
+   * was tuned against. Nothing below h2 needs it; at body size Satoshi is
+   * already spaced correctly. */
   --text-display: clamp(3rem, 9vw, 8.5rem);
   --text-display--line-height: 1.02;
-  --text-display--letter-spacing: -0.02em;
+  --text-display--letter-spacing: -0.03em;
 
   --text-h2: clamp(2rem, 4.5vw, 3.5rem);
   --text-h2--line-height: 1.05;
+  --text-h2--letter-spacing: -0.02em;
 
   --text-h3: clamp(1.25rem, 2vw, 1.75rem);
 
@@ -61,10 +70,14 @@
   --text-small--line-height: 1.5;
 }
 
+/* Aliases onto the two self-hosted faces. The raw variables on the right are
+ * emitted by next/font/local — see `src/app/fonts/index.ts`, which explains why
+ * the names differ on the two sides. No `--font-mono`: nothing on the site sets
+ * `font-mono`, so Tailwind's default stack is left in place rather than loading
+ * a third family for no one. */
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-cormorant);
+  --font-sans: var(--font-satoshi);
+  --font-display: var(--font-clash);
 }
 
 :root {

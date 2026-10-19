@@ -1,31 +1,12 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Geist, Geist_Mono } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
+import { clashDisplay, satoshi } from "@/app/fonts";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import "../globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-// Display face — headings only. Geist Sans stays the body face.
-// 300 for the large display sizes, 500 for smaller headings.
-const cormorantGaramond = Cormorant_Garamond({
-  variable: "--font-cormorant",
-  subsets: ["latin"],
-  weight: ["300", "500"],
-  display: "swap",
-});
 
 // TODO — LAUNCH DAY: see the full list in `src/app/robots.ts`. In short:
 // drop SITE_GATE and PREVIEW_KEY from Vercel, set NEXT_PUBLIC_SITE_LIVE=true,
@@ -76,7 +57,7 @@ export default async function LocaleLayout({
       // globals.css: anchor clicks glide, but route changes still jump to the
       // top instantly instead of scrolling the whole page.
       data-scroll-behavior="smooth"
-      className={`${geistSans.variable} ${geistMono.variable} ${cormorantGaramond.variable} h-full antialiased`}
+      className={`${satoshi.variable} ${clashDisplay.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <NextIntlClientProvider>
