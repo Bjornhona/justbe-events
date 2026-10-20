@@ -23,10 +23,30 @@ export default async function Hero() {
       {/* A full-height hero takes its space from the viewport, not from a
           padding multiplier: `min-h-svh` above is the measurement, and this
           padding only has to keep the type off the header and off the bottom
-          edge on a short screen. It is the standard `Section.tsx` rhythm,
-          which is why the hero no longer runs past one screen. */}
-      <div className="mx-auto w-full max-w-6xl px-4 py-[clamp(7rem,18vh,14rem)] sm:px-6">
+          edge on a short screen.
+
+          15vh, not the 18vh of the standard `Section.tsx` rhythm. The hero is
+          the one section that has to fit five things on one screen, and the
+          eyebrow added 52px to a stack that already filled a 1440x800 laptop:
+          at 18vh the CTA fell 8px below the fold and the scroll cue 12px. The
+          3vh difference is 24px at that height — just enough, and it only
+          comes off the top, so the bottom of the hero is unchanged. */}
+      <div className="mx-auto w-full max-w-6xl px-4 py-[clamp(7rem,15vh,14rem)] sm:px-6">
         <Reveal>
+          {/* A <p>, not a heading: it is a standing brand line, not a title,
+              and an <h2> above the <h1> would put the page's first two
+              headings out of order for anyone navigating by heading.
+
+              English in both locales on purpose — it is set copy rather than
+              something to translate — but it still comes from the catalogues
+              so it is editable in one place and the ES file does not silently
+              diverge. The tracking is the whole effect at this size: 0.18em is
+              wide enough that the line reads as spaced capitals rather than as
+              small text that happens to be uppercase. */}
+          <p className="text-small text-ink-muted mb-[clamp(1.5rem,4vh,2.5rem)] text-center font-sans tracking-[0.18em] uppercase md:text-left">
+            {t('eyebrow')}
+          </p>
+
           {/* NO max-width HERE, ON PURPOSE — do not reinstate one.
               A `ch` constraint cannot bind on this element. Clash Display's
               zero glyph is 0.681em at wght 300, so at the 1440px hero size
