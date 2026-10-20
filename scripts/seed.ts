@@ -1,8 +1,9 @@
 /**
- * scripts/seed.ts — run once, locally, never on production data.
+ * scripts/seed.ts — fills the CMS with stand-in content.
  *
- *   pnpm add -D tsx dotenv
- *   pnpm tsx scripts/seed.ts
+ *   pnpm seed              additive; safe to re-run
+ *   pnpm seed --dry-run    prints what it would write, writes nothing
+ *   pnpm seed --force      overwrites; discards Studio edits
  *
  * WHAT SEEDING IS
  * It fills the CMS with realistic stand-in content so you can build and style
@@ -11,12 +12,24 @@
  *
  * WHY A SCRIPT AND NOT TYPING IT IN THE STUDIO
  * Ten services × two languages is tedious by hand and you will do it more than
- * once — after a schema change, after a dataset wipe, when you set up the
- * development dataset. The script is repeatable and lives in git.
+ * once — after a schema change, after a dataset wipe. The script is repeatable
+ * and lives in git.
+ *
+ * WHICH DATASET
+ * `production`, and that is deliberate: it is the only dataset this project
+ * has. A second one would split the content days before launch and buy little
+ * that the write policy below does not already provide. This script is
+ * expected to run against production.
  *
  * SAFETY
- * Uses createOrReplace with fixed _ids, so re-running is idempotent.
- * Point SANITY_STUDIO_DATASET at `development` while you build.
+ * Non-destructive by default. Fixed _ids throughout, documents go in with
+ * `createIfNotExists`, and the settings singleton is patched with
+ * `setIfMissing` — so a value Barbara has already entered in the Studio always
+ * wins, and re-running only fills in what is genuinely absent.
+ *
+ * `--force` is the one that overwrites: it switches every write to
+ * `createOrReplace` and will discard Studio edits without asking. It is for a
+ * fresh dataset, or for deliberately resetting one.
  */
 
 import {readFileSync} from 'node:fs'
@@ -36,6 +49,31 @@ import MarkdownIt from 'markdown-it'
  * difference between catching a bad conversion and publishing one.
  */
 const DRY_RUN = process.argv.includes('--dry-run')
+
+/**
+ * `pnpm seed` is now safe to re-run against a dataset Barbara has touched.
+ * `pnpm seed --force` restores the old behaviour.
+ *
+ * WHY THIS EXISTS. Every write used to be `createOrReplace`, which is a
+ * first-import tool: running it twice silently discarded anything edited in
+ * the Studio in between. That was survivable while the dataset was scaffolding
+ * and nobody else was in it. It stops being survivable the moment the seeded
+ * content is placeholders that Barbara is expected to correct one at a time —
+ * which is exactly what the numbers and the client logos are.
+ *
+ * So the default is now additive and the destructive path is opt-in:
+ *
+ *   default    documents use `createIfNotExists`, and the settings singleton
+ *              is patched with `setIfMissing`. Nothing already in the dataset
+ *              is ever changed — new fields fill in, existing values stand.
+ *   --force    `createOrReplace` throughout, as before. For a fresh dataset,
+ *              or to deliberately reset one.
+ *
+ * `setIfMissing` is what makes the default useful rather than merely safe: the
+ * singleton always exists, so `createIfNotExists` alone would mean a new field
+ * could never be seeded into it.
+ */
+const FORCE = process.argv.includes('--force')
 
 const required = ['NEXT_PUBLIC_SANITY_PROJECT_ID', 'SANITY_API_WRITE_TOKEN']
 if (!DRY_RUN) {
@@ -135,13 +173,127 @@ const projects = [
 ]
 
 // ---------------------------------------------------------------------------
+// Client logos
+//
+// EVERY NAME HERE IS INVENTED. That is the whole point of the list, and it is
+// the one thing about it that must not drift: these six are seeded with
+// `permissionGranted: true` so the logo strip can be built and looked at
+// today, and a true flag means "this brand has authorised us in writing".
+// Seeding a real company behind a true flag would publish a claim the site has
+// no right to make — it would be indistinguishable, to the site and to a
+// reader, from a cleared client.
+//
+// If you need more, invent more. Do not reach for a real brand because the
+// layout would look better with a familiar name in it.
+//
+// Contrast with `projects` above, which does carry real names: those sit
+// behind `permissionGranted: false`, where the name is stored for Barbara's
+// reference and the site renders `anonymousLabel` instead. Stored-and-gated is
+// fine. Published-and-invented is fine. Published-and-real is not.
+const clients = [
+  'Grupo Maresme',
+  'Aurora Brands',
+  'Nordia',
+  'Casal & Vidal',
+  'Península',
+  'Lumen Group',
+]
+
+/**
+ * A wordmark drawn from the name itself, rather than a downloaded logo.
+ *
+ * SVG, so there is no image library in the dependency tree and no binary in
+ * git — the file is a few hundred bytes of text generated at seed time. It
+ * deliberately looks like a placeholder: one weight, wide tracking, flat grey,
+ * no mark or device. Nobody should be able to mistake it for a finished asset,
+ * and swapping it for the real thing is a file upload in the Studio.
+ *
+ * The box is 480x120 with the text on the baseline of a centred line, which
+ * gives every logo the same aspect ratio regardless of name length — a strip
+ * of these lines up without any per-item adjustment.
+ */
+function wordmarkSvg(name: string) {
+  // Escaped because "Casal & Vidal" contains an ampersand, which is a parse
+  // error in XML rather than a stray character.
+  const escaped = name.replace(
+    /[&<>"']/g,
+    (c) =>
+      ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;'})[
+        c
+      ] as string,
+  )
+
+  // Shrink the type for the longer names so nothing overruns the 480px box.
+  const fontSize = name.length > 13 ? 34 : 42
+
+  return Buffer.from(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 120" width="480" height="120" role="img" aria-label="${escaped}">
+  <rect width="480" height="120" fill="none"/>
+  <text x="240" y="60" dominant-baseline="central" text-anchor="middle"
+        font-family="Helvetica, Arial, sans-serif" font-size="${fontSize}"
+        letter-spacing="3" fill="#6b6461">${escaped}</text>
+</svg>
+`,
+    'utf8',
+  )
+}
+
+/**
+ * Uploads the six wordmarks and returns the array value for `clients`.
+ *
+ * `filename` is stable per brand so re-running does not scatter near-identical
+ * assets through the media library — Sanity dedupes an identical upload onto
+ * the same asset document.
+ */
+async function buildClients() {
+  const entries = []
+
+  for (const [i, name] of clients.entries()) {
+    const asset = await client.assets.upload('image', wordmarkSvg(name), {
+      filename: `placeholder-wordmark-${i}.svg`,
+      contentType: 'image/svg+xml',
+    })
+
+    entries.push({
+      _type: 'clientLogo',
+      _key: `client-${i}`,
+      name,
+      logo: {_type: 'image', asset: {_type: 'reference', _ref: asset._id}},
+      // True on purpose, and safe only because the name is invented — see the
+      // block comment above `clients`.
+      permissionGranted: true,
+      order: i,
+    })
+  }
+
+  return entries
+}
+
+/**
+ * Round, provisional, and obviously so. Barbara replaces each one as it is
+ * confirmed; until then the "Pendiente de confirmar" description on the field
+ * in the Studio is what marks them as not yet real.
+ *
+ * Deliberately not precise: "203 eventos" reads as a counted fact and would be
+ * quoted back at her, where 200 reads as the round number it is.
+ */
+const placeholderNumbers = {
+  yearsActive: 15,
+  eventsDelivered: 200,
+  attendeesTotal: 50000,
+  countriesCount: 10,
+}
+
+// ---------------------------------------------------------------------------
 // Legal pages
 //
 // The three policies are drafted as markdown in content/legal-{es,en}.md and
 // converted here. That direction is deliberate and one-way: the markdown is the
-// drafting format, Sanity is where the published text lives. Once Barbara has
-// corrected something in the Studio, re-running this WILL overwrite it —
-// createOrReplace, not patch. Treat it as a first import, not a sync.
+// drafting format, Sanity is where the published text lives. Treat it as a
+// first import, not a sync: re-running without `--force` will NOT pick up an
+// edit to the markdown once the page exists, and re-running WITH `--force`
+// discards whatever Barbara corrected in the Studio. Revising a policy means
+// editing the markdown and forcing — check with her before you do.
 // ---------------------------------------------------------------------------
 
 /**
@@ -372,20 +524,30 @@ function buildLegalDocs() {
 
 function seedLegal(tx: ReturnType<typeof client.transaction>) {
   const docs = buildLegalDocs()
-  docs.forEach((doc) => tx.createOrReplace(doc))
+  docs.forEach((doc) => write(tx, doc))
   return docs.length
 }
 
-async function seed() {
-  if (DRY_RUN) {
-    console.log(JSON.stringify(buildLegalDocs(), null, 2))
-    console.error('\n--dry-run: nothing was written.')
-    return
-  }
+/**
+ * The one place the `--force` decision is made, so no call site can forget it.
+ * Without `--force` an existing document is left exactly as it is; with it, the
+ * document is replaced wholesale.
+ */
+function write(
+  tx: ReturnType<typeof client.transaction>,
+  doc: {_id: string; _type: string} & Record<string, unknown>,
+) {
+  return FORCE ? tx.createOrReplace(doc) : tx.createIfNotExists(doc)
+}
 
-  const tx = client.transaction()
-
-  tx.createOrReplace({
+/**
+ * The settings singleton, built but not written. `clientEntries` is passed in
+ * rather than fetched here so `--dry-run` can render the document without
+ * uploading anything — an asset upload is a write, and a dry run must not make
+ * one.
+ */
+function buildSettingsDoc(clientEntries: unknown[] | null) {
+  return {
     _id: 'siteSettings',
     _type: 'siteSettings',
     brandName: 'B Events',
@@ -398,10 +560,78 @@ async function seed() {
     legalName: 'Barbara Juan Portoles Events SL',
     nif: 'B93941276',
     address: 'Paseo de Sant Gervasio 57 bis, 3º 3ª\n08022 Barcelona',
-  })
+    ...placeholderNumbers,
+    ...(clientEntries ? {clients: clientEntries} : {}),
+  }
+}
+
+async function seed() {
+  if (DRY_RUN) {
+    const verb = FORCE ? 'createOrReplace' : 'createIfNotExists'
+
+    console.log(`MODE: ${FORCE ? '--force (OVERWRITES)' : 'default (additive)'}`)
+    console.log(
+      `dataset: ${process.env.NEXT_PUBLIC_SANITY_DATASET || 'development'}\n`,
+    )
+
+    console.log(
+      `siteSettings — ${
+        FORCE
+          ? 'createOrReplace (every field below overwritten)'
+          : 'createIfNotExists + patch().setIfMissing() (existing values kept)'
+      }`,
+    )
+    console.log(
+      JSON.stringify(
+        buildSettingsDoc(
+          clients.map((name, i) => ({
+            _type: 'clientLogo',
+            _key: `client-${i}`,
+            name,
+            logo: '<svg wordmark uploaded at run time>',
+            permissionGranted: true,
+            order: i,
+          })),
+        ),
+        null,
+        2,
+      ),
+    )
+
+    console.log(`\n${services.length} services — ${verb}, _id service-0..${services.length - 1}`)
+    console.log(`${projects.length} projects — ${verb}, _id ${projects.map((p) => p.id).join(', ')}`)
+    console.log(`\n${LEGAL_IDS.length} legal pages — ${verb}`)
+    console.log(JSON.stringify(buildLegalDocs(), null, 2))
+
+    console.error('\n--dry-run: nothing was written.')
+    return
+  }
+
+  // Uploaded before the transaction opens: assets are written through a
+  // separate endpoint and cannot be part of it. Skipped entirely unless they
+  // are going to be used, so a plain re-run uploads nothing.
+  const settings = await client.getDocument('siteSettings')
+  const seedClients = FORCE || !(settings?.clients as unknown[])?.length
+  const clientEntries = seedClients ? await buildClients() : []
+
+  const tx = client.transaction()
+
+  const settingsDoc = buildSettingsDoc(seedClients ? clientEntries : null)
+
+  if (FORCE) {
+    tx.createOrReplace(settingsDoc)
+  } else {
+    // The singleton already exists in every dataset that has been seeded once,
+    // so `createIfNotExists` alone would never deliver the new fields. Create
+    // it if it is genuinely absent, then fill in only what is missing — a
+    // figure Barbara has already corrected keeps her value.
+    const {_id, _type, ...values} = settingsDoc
+    tx.createIfNotExists({_id, _type})
+    tx.patch(_id, (p) => p.setIfMissing(values))
+  }
 
   services.forEach(([pillar, esTitle, enTitle, esDesc, enDesc], i) => {
-    tx.createOrReplace({
+    write(tx, {
       _id: `service-${i}`,
       _type: 'service',
       pillar,
@@ -412,7 +642,7 @@ async function seed() {
   })
 
   projects.forEach((p, i) => {
-    tx.createOrReplace({
+    write(tx, {
       _id: p.id,
       _type: 'project',
       title: {es: p.es, en: p.en},
@@ -436,7 +666,17 @@ async function seed() {
   console.log(
     `Seeded: settings, ${services.length} services, ${projects.length} projects, ${legalCount} legal pages`,
   )
-  console.log('Images are not seeded — add them in the Studio.')
+  console.log(
+    seedClients
+      ? `Uploaded ${clientEntries.length} placeholder wordmarks (invented brands).`
+      : 'Clients already present — left untouched. Use --force to replace them.',
+  )
+  console.log(
+    FORCE
+      ? 'Ran with --force: existing documents were REPLACED.'
+      : 'Existing documents and field values were left untouched. Use --force to replace them.',
+  )
+  console.log('Project images are not seeded — add them in the Studio.')
 }
 
 seed().catch((e) => {

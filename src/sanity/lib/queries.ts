@@ -71,6 +71,18 @@ export type Press = {
   portrait?: Maybe<SanityImage>
 }
 
+/**
+ * One cleared client logo. There is no `permissionGranted` on this type on
+ * purpose: by the time a value reaches here the flag has already been applied
+ * in the GROQ, so an uncleared entry has no representation in TypeScript at
+ * all. A component cannot read the flag, and therefore cannot get it wrong.
+ */
+export type ClientLogo = {
+  name: string
+  logo?: Maybe<SanityImage>
+  order?: Maybe<number>
+}
+
 export type SiteSettingsQueryResult = {
   _id: string
   brandName?: Maybe<string>
@@ -83,6 +95,9 @@ export type SiteSettingsQueryResult = {
   eventsDelivered?: Maybe<number>
   attendeesTotal?: Maybe<number>
   countriesCount?: Maybe<number>
+  /** Already filtered to cleared brands — see the query. Never includes an
+   *  entry whose `permissionGranted` is false, logo included. */
+  clients?: Maybe<ClientLogo[]>
   press?: Maybe<Press>
   email?: Maybe<string>
   showPhonePublicly?: Maybe<boolean>
@@ -103,6 +118,12 @@ export type SiteSettingsQueryResult = {
  * `showPhonePublicly` is applied here rather than in the components: the number
  * is Barbara's personal mobile, and gating it once at the query means no future
  * component can render it by forgetting the flag.
+ *
+ * `clients` is gated on the same principle, one step harder. `phone` and the
+ * project `client` blank a single field with `select()`; this filters the array
+ * itself, so an uncleared brand contributes no object at all — no name, and no
+ * `logo.asset` for an image URL to be built from. Blanking fields would still
+ * have put the asset reference on the wire. Keep the filter on the array.
  */
 export const siteSettingsQuery = defineQuery(`
   *[_id == "siteSettings"][0] {
@@ -115,6 +136,11 @@ export const siteSettingsQuery = defineQuery(`
     eventsDelivered,
     attendeesTotal,
     countriesCount,
+    "clients": clients[permissionGranted == true] | order(coalesce(order, 999) asc) {
+      name,
+      logo { ${IMAGE_FIELDS} },
+      order
+    },
     press {
       quote,
       sourceName,

@@ -56,7 +56,11 @@ export default async function Numbers() {
   if (figures.length === 0) return null
 
   return (
-    <Section id="cifras" tone="paper">
+    // The one dark band on the page, and the only section whose colours are
+    // inverted — see `Section` for the two rules that apply inside it. `tall`
+    // is deliberate: four figures floating in a tall dark band is the effect,
+    // so nothing here should grow to fill the space.
+    <Section id="cifras" tone="dark" padding="tall">
       <Reveal>
         {/* A description list, because that is what this is: each number is
             described by its label. The pair is written <dt> then <dd> as the
@@ -69,8 +73,12 @@ export default async function Numbers() {
         <dl className="grid grid-cols-2 gap-x-8 gap-y-12 md:grid-cols-4">
           {figures.map(({ key, value }) => (
             <div key={key} className="flex flex-col-reverse">
-              <dt className="text-small text-ink-muted mt-3">{t(key)}</dt>
-              <dd className="font-display text-h2 text-ink font-light">
+              {/* `text-paper/70` rather than a muted token: the ink-* neutrals
+                  are mixed for a light ground and all of them fail here. At
+                  70% this measures 8.65:1 on --color-ink-deep, so the label
+                  reads as secondary without dropping below AA at 13px. */}
+              <dt className="text-small text-paper/70 mt-3">{t(key)}</dt>
+              <dd className="font-display text-h2 text-paper font-light">
                 {format.number(value)}
               </dd>
             </div>

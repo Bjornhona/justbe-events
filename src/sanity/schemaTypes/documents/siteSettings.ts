@@ -1,5 +1,8 @@
 import {defineType, defineField} from 'sanity'
 
+/** Marca una cifra como provisional mientras siga sembrada por el script. */
+const PENDING = 'Pendiente de confirmar.'
+
 // Singleton. Everything that appears in the header, footer and legal notice
 // lives here so nothing legally significant is hardcoded in the repo.
 export const siteSettings = defineType({
@@ -9,6 +12,7 @@ export const siteSettings = defineType({
   groups: [
     {name: 'brand', title: 'Marca', default: true},
     {name: 'numbers', title: 'Cifras'},
+    {name: 'clients', title: 'Clientes'},
     {name: 'press', title: 'Prensa'},
     {name: 'contact', title: 'Contacto'},
     {name: 'legal', title: 'Datos fiscales'},
@@ -40,10 +44,84 @@ export const siteSettings = defineType({
     //
     // Son recuentos: un decimal o un negativo aquí sería un error de tecleo,
     // y se vería en portada a tamaño de titular.
-    defineField({name: 'yearsActive', title: 'Años de experiencia', type: 'number', group: 'numbers', validation: (Rule) => Rule.integer().min(0)}),
-    defineField({name: 'eventsDelivered', title: 'Eventos realizados', type: 'number', group: 'numbers', validation: (Rule) => Rule.integer().min(0)}),
-    defineField({name: 'attendeesTotal', title: 'Asistentes en total', type: 'number', group: 'numbers', validation: (Rule) => Rule.integer().min(0)}),
-    defineField({name: 'countriesCount', title: 'Países', type: 'number', group: 'numbers', validation: (Rule) => Rule.integer().min(0)}),
+    //
+    // Las cuatro llegan sembradas con cifras redondas de relleno para poder
+    // montar la sección. `PENDING` es el aviso de que todavía no son reales:
+    // cuando confirmes una, corrige el número y borra esa frase, y así se ve
+    // de un vistazo cuáles quedan por revisar.
+    defineField({name: 'yearsActive', title: 'Años de experiencia', type: 'number', group: 'numbers', description: PENDING, validation: (Rule) => Rule.integer().min(0)}),
+    defineField({name: 'eventsDelivered', title: 'Eventos realizados', type: 'number', group: 'numbers', description: PENDING, validation: (Rule) => Rule.integer().min(0)}),
+    defineField({name: 'attendeesTotal', title: 'Asistentes en total', type: 'number', group: 'numbers', description: PENDING, validation: (Rule) => Rule.integer().min(0)}),
+    defineField({name: 'countriesCount', title: 'Países', type: 'number', group: 'numbers', description: PENDING, validation: (Rule) => Rule.integer().min(0)}),
+
+    // --- clientes ---
+    //
+    // Mismo modelo de permiso que en `project`, y por el mismo motivo: el
+    // logotipo de una marca es suya, y publicarlo sin autorización escrita es
+    // justo lo que esta web no puede hacer todavía.
+    //
+    // La diferencia con `project` es que aquí el permiso esconde la entrada
+    // ENTERA, no solo el nombre. Un proyecto sin permiso sigue siendo
+    // publicable en anónimo ("una multinacional de alimentación"); un logotipo
+    // en anónimo no significa nada. Por eso la consulta filtra el array entero
+    // en vez de vaciar campos sueltos — ver `siteSettingsQuery`.
+    defineField({
+      name: 'clients',
+      title: 'Clientes',
+      type: 'array',
+      group: 'clients',
+      description:
+        'Solo se publican los que tengan el permiso activado. El resto puedes dejarlos aquí guardados: no salen en la web.',
+      of: [
+        {
+          type: 'object',
+          name: 'clientLogo',
+          fields: [
+            defineField({
+              name: 'name',
+              title: 'Nombre de la marca',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'logo',
+              title: 'Logotipo',
+              type: 'image',
+              description:
+                'Preferible en PNG o SVG con fondo transparente.',
+            }),
+            defineField({
+              name: 'permissionGranted',
+              title: '¿Tenemos permiso por escrito de la marca?',
+              type: 'boolean',
+              initialValue: false,
+              description:
+                'Actívalo SOLO cuando tengas el email de la marca autorizando el uso de su logotipo. Mientras esté desactivado, esta marca no aparece en la web.',
+            }),
+            defineField({
+              name: 'order',
+              title: 'Orden',
+              type: 'number',
+              validation: (Rule) => Rule.integer(),
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'name',
+              granted: 'permissionGranted',
+              media: 'logo',
+            },
+            // Same 🔒 / ✅ vocabulary as the project preview, so the permission
+            // state reads identically wherever it appears in the Studio.
+            prepare: ({title, granted, media}) => ({
+              title: title || 'Sin nombre',
+              subtitle: granted ? '✅ Publicado' : '🔒 Sin permiso',
+              media,
+            }),
+          },
+        },
+      ],
+    }),
 
     // --- prensa ---
     defineField({

@@ -42,6 +42,19 @@
   --color-paper-alt: #f1ede7;
   --color-line:      #e4e0da;
 
+  /* The dark band. Not pure black — it carries the same warmth as --color-ink
+   * so the page reads as one palette rather than a light site with a black
+   * stripe dropped into it.
+   *
+   * CONTRAST, MEASURED AGAINST THIS BACKGROUND:
+   *   --color-paper   16.83:1  figures and body text
+   *   --color-jb-400   8.15:1  links and accents — passes AA at any size
+   *   --color-jb-700   3.18:1  FAILS AA for normal text; large text only
+   *
+   * That inversion is the thing to remember: jb-700 is the safe link colour on
+   * paper and the unsafe one here, and jb-400 is the reverse. See `Section`. */
+  --color-ink-deep:  #1a1715;
+
   /* Type scale — five steps. Tailwind pairs each `--text-*` with its
    * `--line-height` / `--letter-spacing` siblings, so `text-display` carries
    * its leading and tracking with it.
