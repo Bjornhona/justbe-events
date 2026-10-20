@@ -20,20 +20,40 @@ export default async function Hero() {
 
   return (
     <section className="bg-paper relative flex min-h-svh flex-col justify-center">
-      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+      {/* A full-height hero takes its space from the viewport, not from a
+          padding multiplier: `min-h-svh` above is the measurement, and this
+          padding only has to keep the type off the header and off the bottom
+          edge on a short screen. It is the standard `Section.tsx` rhythm,
+          which is why the hero no longer runs past one screen. */}
+      <div className="mx-auto w-full max-w-6xl px-4 py-[clamp(7rem,18vh,14rem)] sm:px-6">
         <Reveal>
-          <h1 className="font-display text-display text-ink mx-auto max-w-[20ch] text-center font-light text-balance sm:mx-0 sm:text-left">
+          {/* NO max-width HERE, ON PURPOSE — do not reinstate one.
+              A `ch` constraint cannot bind on this element. Clash Display's
+              zero glyph is 0.681em at wght 300, so at the 1440px hero size
+              (the 7.5rem cap = 120px) a single `ch` is ~82px: even 12ch
+              computes to ~981px, and anything loose enough to look reasonable
+              in the source is wider than the 1104px content box (max-w-6xl
+              1152px less the 48px of px-6) and therefore dead code. The
+              container is the measure instead.
+
+              Measured, not assumed: `--text-hero` rags this to four lines at
+              1440 in both locales. */}
+          <h1 className="font-display text-hero text-ink text-center font-light text-balance md:text-left">
             {t.rich('tagline', {
               accent: (chunks) => <span className="text-jb-500">{chunks}</span>,
             })}
           </h1>
 
-          {/* jb-700, not the jb-500 above: 500 fails AA at body size on paper. */}
-          <p className="text-body text-ink-muted mx-auto mt-8 max-w-[46ch] text-center sm:mx-0 sm:text-left">
+          {/* jb-700, not the jb-500 above: 500 fails AA at body size on paper.
+              `46ch` does bind here, unlike on the h1 above: Satoshi's zero is
+              just as wide (0.683em), but this is 17px type rather than 158px,
+              so a ch is ~11.6px and the measure lands at ~534px — comfortably
+              inside the 1104px container. */}
+          <p className="text-body text-ink-muted mx-auto mt-8 max-w-[46ch] text-center md:mx-0 md:text-left">
             {t('lead')}
           </p>
 
-          <p className="mt-10 text-center sm:text-left">
+          <p className="mt-10 text-center md:text-left">
             <Link
               href={{ pathname: '/', hash: 'section-contact' }}
               className="text-jb-700 group relative inline-block rounded-xs focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current"

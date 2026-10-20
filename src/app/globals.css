@@ -42,26 +42,51 @@
   --color-paper-alt: #f1ede7;
   --color-line:      #e4e0da;
 
-  /* Type scale — five steps, fluid between 375px and 1440px.
-   * Tailwind pairs each `--text-*` with its `--line-height` / `--letter-spacing`
-   * siblings, so `text-display` carries its leading and tracking with it.
+  /* Type scale — five steps. Tailwind pairs each `--text-*` with its
+   * `--line-height` / `--letter-spacing` siblings, so `text-display` carries
+   * its leading and tracking with it.
+   *
+   * The three display steps were raised ~25% at the top end; `body` and `small`
+   * are deliberately untouched. Empty space and large headings are the effect
+   * here, so nothing at reading size grew to match.
+   *
+   * WHERE EACH STEP STOPS BEING FLUID. The floors are high enough that the
+   * middle term does not win until well past phone widths — `--text-display`
+   * is pinned at 3.25rem below a 473px viewport (11vw = 52px there), so a
+   * 390px phone renders the floor, not a vw-derived size. That is intentional:
+   * a headline that tracked 11vw down to 375px would be too small to carry the
+   * hero. Do not "fix" it by raising the vw coefficient — 11vw is what puts the
+   * ceiling at ~1600px, and a steeper slope would stop desktop type growing
+   * several hundred px earlier, which is the opposite of the intent.
    *
    * TRACKING. The display steps are negative because Clash Display is a wide
    * face with a tall x-height: at the same px it reads larger and looser than
-   * the Cormorant it replaced, and at 8.5rem the default spacing opens visible
-   * gaps between letters. The sizes themselves are unchanged — the correction
-   * is tracking only, so the clamp() still lines up with the layout widths it
-   * was tuned against. Nothing below h2 needs it; at body size Satoshi is
+   * the Cormorant it replaced, and at 11rem the default spacing opens visible
+   * gaps between letters. Nothing below h2 needs it; at body size Satoshi is
    * already spaced correctly. */
-  --text-display: clamp(3rem, 9vw, 8.5rem);
+  --text-display: clamp(3.25rem, 11vw, 11rem);
   --text-display--line-height: 1.02;
   --text-display--letter-spacing: -0.03em;
 
-  --text-h2: clamp(2rem, 4.5vw, 3.5rem);
+  /* The hero headline, and nothing else. It is a step of its own rather than a
+   * one-off arbitrary value on the element, so it keeps the leading and
+   * tracking that have to travel with a size this large.
+   *
+   * Capped below `--text-display` on purpose: the hero is the only place a
+   * display-sized string has to share one screen with a lead, a CTA and a
+   * scroll cue, so it is the one heading that cannot spend the full ceiling.
+   * The shallower 9vw slope and the 7.5rem cap are what hold the tagline to
+   * four lines at 1440. Every other display heading still gets the full
+   * `--text-display`, where running tall costs nothing. */
+  --text-hero: clamp(3.25rem, 9vw, 7.5rem);
+  --text-hero--line-height: 1.02;
+  --text-hero--letter-spacing: -0.03em;
+
+  --text-h2: clamp(2.25rem, 5.5vw, 4.5rem);
   --text-h2--line-height: 1.05;
   --text-h2--letter-spacing: -0.02em;
 
-  --text-h3: clamp(1.25rem, 2vw, 1.75rem);
+  --text-h3: clamp(1.375rem, 2.2vw, 2rem);
 
   --text-body: 1.0625rem;
   --text-body--line-height: 1.6;

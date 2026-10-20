@@ -57,6 +57,10 @@ export default async function Pillars() {
                   // tracks, so it disappears with the columns on mobile.
                   i > 0 ? 'md:border-line md:border-l md:pl-10' : '',
                   i < PILLARS.length - 1 ? 'md:pr-10' : '',
+                  // The middle column drops 2rem so the three headings do not
+                  // read as one ruled row. Its left-hand rule drops with it,
+                  // which is the point — the verticals are meant to step.
+                  i === 1 ? 'md:mt-8' : '',
                 ]
                   .filter(Boolean)
                   .join(' ')}

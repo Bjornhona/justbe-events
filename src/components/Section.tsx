@@ -35,7 +35,11 @@ export default function Section({
         .filter(Boolean)
         .join(' ')}
     >
-      <div className="mx-auto max-w-6xl px-4 py-[clamp(5rem,12vh,9rem)] sm:px-6">
+      {/* The page's vertical rhythm, set once. The empty space is the effect,
+          not a side-effect of something else growing — if a section looks too
+          airy, that is the intent and nothing should be enlarged to fill it.
+          The hero runs 1.5x this on its own; every other section sits here. */}
+      <div className="mx-auto max-w-6xl px-4 py-[clamp(7rem,18vh,14rem)] sm:px-6">
         {children}
       </div>
     </section>

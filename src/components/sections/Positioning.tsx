@@ -17,11 +17,21 @@ export default async function Positioning() {
   return (
     <Section id="posicionamiento" tone="alt">
       <Reveal>
-        {/* `text-pretty`, not `text-balance`: balancing is for headings of a
-            few words and gives a paragraph this long an uneven rag. */}
-        <p className="text-h3 text-ink mx-auto max-w-[40ch] text-center text-pretty">
-          {t('body')}
-        </p>
+        {/* Offset rather than centred: the claim sits in the right two-thirds
+            of a 12-column grid (columns 5–12), so the empty third on the left
+            is doing the work that centring used to. Collapses to one full-width
+            column below md — the offset reads as a broken margin on a phone.
+
+            No `ch` max-width. On desktop the column is the measure (8/12 of a
+            1104px container, so ~720px less the gap); below md the container
+            is. A `40ch` cap would bind at the tablet end and go inert at the
+            desktop end, because Satoshi's zero is 0.683em and `text-h3` tops
+            out at 32px — 40ch is ~865px there, wider than the column. */}
+        <div className="md:grid md:grid-cols-12">
+          <p className="text-h3 text-ink text-pretty md:col-span-8 md:col-start-5">
+            {t('body')}
+          </p>
+        </div>
       </Reveal>
     </Section>
   )

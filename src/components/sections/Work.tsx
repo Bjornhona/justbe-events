@@ -41,9 +41,20 @@ export default async function Work() {
   return (
     <Section id="section-projects" tone="alt">
       <Reveal>
-        <div className="grid gap-x-12 gap-y-16 sm:grid-cols-2">
-          {projects.slice(0, MAX_CARDS).map((project) => {
+        {/* A 12-column grid on desktop, where cards alternate 7 and 5 columns
+            so each row sums to 12 and no two rows break at the same place. The
+            narrow card in each pair also sits 4rem lower, which is what stops
+            the two rows reading as a table. One full-width column below md:
+            both the 7/5 split and the offset read as a misalignment on a phone
+            rather than as a composition. */}
+        <div className="grid gap-x-12 gap-y-16 md:grid-cols-12">
+          {projects.slice(0, MAX_CARDS).map((project, i) => {
             const meta = [project.city, project.year].filter(Boolean).join(' · ')
+
+            // Even cards take 7 columns, odd take 5 and drop 4rem. The offset
+            // rides along with the narrow card rather than being tracked
+            // separately, so the two rules cannot drift apart.
+            const narrow = i % 2 === 1
 
             // `client` is only in the payload when the brand gave written
             // permission — `featuredProjectsQuery` gates it, so there is no
@@ -55,7 +66,17 @@ export default async function Work() {
             return (
               <article
                 key={project._id}
-                className="border-jb-500 relative border-t-2 pt-6"
+                className={[
+                  // `min-w-0` overrides the `min-width: auto` a grid item gets
+                  // by default, which would otherwise let a long unbreakable
+                  // word widen its own track and push the row past the
+                  // container. Today's longest is "arquitectura" (~407px at
+                  // the 72px h2 ceiling) inside a 432px five-column track, so
+                  // nothing overflows — but that is a 25px margin held by the
+                  // copy, not by the layout, and this makes it the layout's.
+                  'border-jb-500 relative min-w-0 border-t-2 pt-6',
+                  narrow ? 'md:col-span-5 md:mt-16' : 'md:col-span-7',
+                ].join(' ')}
               >
                 {/* BACKGROUND IMAGE LAYER — when real photography arrives.
                     Add it here, as the first child, absolutely positioned to
@@ -71,7 +92,20 @@ export default async function Work() {
                     paper, and `isPlaceholder` should keep stand-in images out
                     until the real shoot lands. */}
 
-                <h2 className="font-display text-h2 text-ink font-light">
+                {/* `text-balance`, not `text-pretty`: these are three or four
+                    words in a narrow column, which is what balancing is for.
+                    It keeps the conjunction at the head of a line on three of
+                    the four seeded cards ("Celebración / y conserjería").
+
+                    It does NOT fix the fourth, and no wrapping property will.
+                    "Convención y arquitectura efímera" in a five-column card
+                    is a geometry problem: at the 72px `--text-h2` ceiling the
+                    track is 432px, "Convención y" measures 435.7px and
+                    "y arquitectura" 457.1px, so the "y" fits on neither
+                    neighbour's line and is forced to stand alone. It misses by
+                    4px. Closing that gap means a smaller step for card
+                    headings or a wider track — not a hint here. */}
+                <h2 className="font-display text-h2 text-ink font-light text-balance">
                   {pickLocale(project.eventType, locale)}
                 </h2>
 
