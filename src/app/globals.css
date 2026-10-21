@@ -42,18 +42,26 @@
   --color-paper-alt: #f1ede7;
   --color-line:      #e4e0da;
 
-  /* The dark band. Not pure black — it carries the same warmth as --color-ink
-   * so the page reads as one palette rather than a light site with a black
-   * stripe dropped into it.
+  /* The dark band. A deep teal rather than a near-black: it is the only dark
+   * surface on the page, so it is the one place a large field of brand colour
+   * can land without competing with anything. Sits at the dark end of the
+   * ramp above — close to jb-950, pulled slightly greener and lighter.
    *
    * CONTRAST, MEASURED AGAINST THIS BACKGROUND:
-   *   --color-paper   16.83:1  figures and body text
-   *   --color-jb-400   8.15:1  links and accents — passes AA at any size
-   *   --color-jb-700   3.18:1  FAILS AA for normal text; large text only
+   *   --color-paper        14.56:1  figures
+   *   --color-paper at 70%  7.79:1  labels — still clears AA at 13px
+   *   --color-jb-400        7.05:1  links and accents — AA at any size
+   *   --color-jb-500        6.06:1  softer accent, also fine
+   *   --color-jb-700        2.75:1  FAILS AA at every size
+   *   --color-ink           1.05:1  invisible — never use the ink neutrals here
    *
    * That inversion is the thing to remember: jb-700 is the safe link colour on
-   * paper and the unsafe one here, and jb-400 is the reverse. See `Section`. */
-  --color-ink-deep:  #1a1715;
+   * paper and unusable here, and jb-400 is the reverse. See `Section`.
+   *
+   * NOTE: jb-700 used to clear AA for large text on the old near-black ground
+   * (3.18:1). On this teal it does not (2.75:1) — the exemption is gone, so
+   * there is no size at which jb-700 is acceptable in the dark band. */
+  --color-ink-deep:  #0b2927;
 
   /* Type scale — five steps. Tailwind pairs each `--text-*` with its
    * `--line-height` / `--letter-spacing` siblings, so `text-display` carries
@@ -145,5 +153,22 @@ html {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  /* The reduced-motion guarantee for <Reveal>. The component also checks
+   * `useReducedMotion()`, but that hook cannot cover two cases and this can:
+   * the server renders the un-reduced branch (it cannot read a media query),
+   * so without this rule the sections are `opacity: 0` until hydration; and
+   * Motion's hook reads the preference once with no subscription, so flipping
+   * the OS setting with the tab open would otherwise have no effect.
+   *
+   * `!important` because Motion writes these as inline styles. The child
+   * selector matters in `stagger` mode: there it is the direct children that
+   * each carry their own `opacity: 0`, not the container. See Reveal.tsx. */
+  [data-reveal],
+  [data-reveal] > * {
+    opacity: 1 !important;
+    translate: none !important;
+    transform: none !important;
   }
 }

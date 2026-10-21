@@ -40,15 +40,18 @@ export default async function Work() {
 
   return (
     <Section id="section-projects" tone="alt">
-      <Reveal>
-        {/* A 12-column grid on desktop, where cards alternate 7 and 5 columns
-            so each row sums to 12 and no two rows break at the same place. The
-            narrow card in each pair also sits 4rem lower, which is what stops
-            the two rows reading as a table. One full-width column below md:
-            both the 7/5 split and the offset read as a misalignment on a phone
-            rather than as a composition. */}
-        <div className="grid gap-x-12 gap-y-16 md:grid-cols-12">
-          {projects.slice(0, MAX_CARDS).map((project, i) => {
+      {/* A 12-column grid on desktop, where cards alternate 7 and 5 columns so
+          each row sums to 12 and no two rows break at the same place. The
+          narrow card in each pair also sits 4rem lower, which is what stops
+          the two rows reading as a table. One full-width column below md: both
+          the 7/5 split and the offset read as a misalignment on a phone rather
+          than as a composition.
+
+          The grid is on `Reveal` so the cards are its direct children and can
+          be staggered. It has to be: each card carries its own `md:col-span-*`
+          and must stay the grid item itself — see `Reveal`. */}
+      <Reveal stagger className="grid gap-x-12 gap-y-16 md:grid-cols-12">
+        {projects.slice(0, MAX_CARDS).map((project, i) => {
             const meta = [project.city, project.year].filter(Boolean).join(' · ')
 
             // Even cards take 7 columns, odd take 5 and drop 4rem. The offset
@@ -116,8 +119,7 @@ export default async function Work() {
                 <p className="text-body text-ink-body mt-4">{attribution}</p>
               </article>
             )
-          })}
-        </div>
+        })}
       </Reveal>
     </Section>
   )

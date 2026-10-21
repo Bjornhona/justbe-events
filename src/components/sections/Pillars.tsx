@@ -23,6 +23,24 @@ const PILLARS = ['imagine', 'build', 'live'] as const satisfies readonly Pillar[
  * The pillar names and one-line descriptions come from `next-intl`, not Sanity:
  * they are the fixed structure of the offer, not content Barbara edits per
  * event. Only the services inside them are CMS-driven.
+ *
+ * ── THE THREE NAMES ARE ENGLISH IN BOTH CATALOGUES ────────────────────────
+ * `Pillars.*.name` reads "Imagine" / "Build" / "Live" on /es as well as /en.
+ * That is not an untranslated string waiting to be finished — it is brand
+ * vocabulary, the same category as the hero eyebrow, which is also English on
+ * /es for the same reason. Do not "fix" it in `messages/es.json`.
+ *
+ * It also removes a layout failure rather than papering over one. The Spanish
+ * names overflowed their grid tracks at every desktop width: "Construimos"
+ * needs ~424px of ink against a ~270px track, so its glyphs ran 97px past the
+ * column and collided with "Vivimos" by 56px at 1440. Because `grid-cols-3`
+ * compiles to `minmax(0, 1fr)`, the track never widened and nothing scrolled —
+ * the words simply overlapped, and only Range client rects showed it
+ * (`getBoundingClientRect` returns the block box, which is clipped to the
+ * track and looked innocent). No type-size reduction survived that gap.
+ *
+ * The DESCRIPTIONS and the service lists below them stay translated. Only the
+ * three names are fixed.
  */
 export default async function Pillars() {
   const [t, requestedLocale, services] = await Promise.all([
@@ -44,9 +62,10 @@ export default async function Pillars() {
 
   return (
     <Section id="section-services" tone="paper">
-      <Reveal>
-        <div className="grid gap-16 md:grid-cols-3 md:gap-0">
-          {PILLARS.map((pillar, i) => {
+      {/* The grid is on `Reveal` so the three columns are its direct children
+          and can be staggered individually — see `Reveal`. */}
+      <Reveal stagger className="grid gap-16 md:grid-cols-3 md:gap-0">
+        {PILLARS.map((pillar, i) => {
             const items = services.filter((s) => s.pillar === pillar)
 
             return (
@@ -65,7 +84,19 @@ export default async function Pillars() {
                   .filter(Boolean)
                   .join(' ')}
               >
-                <h2 className="font-display text-h2 text-ink font-light">
+                {/* jb-600, not the jb-700 used for links: these are the
+                    largest teal elements on the page and the strongest place
+                    to carry brand colour, and at `--text-h2` they are 36px at
+                    the floor and 72px at the ceiling. That is WCAG "large
+                    text" at every viewport, so the 3:1 threshold applies and
+                    jb-600 clears it at 3.64:1 on paper.
+
+                    Do not reuse this colour at body size — jb-600 is 3.64:1,
+                    well under the 4.5:1 that text under 24px needs. The margin
+                    is also thinner than it looks: on `paper-alt` the same
+                    colour is 3.31:1, so moving this section to the alt tone
+                    leaves only 0.31 of headroom. */}
+                <h2 className="font-display text-h2 text-jb-600 font-light">
                   {t(`${pillar}.name`)}
                 </h2>
                 <p className="text-body text-ink-muted mt-3">
@@ -83,8 +114,7 @@ export default async function Pillars() {
                 )}
               </div>
             )
-          })}
-        </div>
+        })}
       </Reveal>
     </Section>
   )

@@ -22,15 +22,15 @@
   },
   "Pillars": {
     "imagine": {
-      "name": "Imaginamos",
+      "name": "Imagine",
       "description": "El concepto, el relato y la primera imagen de lo que va a pasar."
     },
     "build": {
-      "name": "Construimos",
+      "name": "Build",
       "description": "Producción, proveedores y logística, coordinados de principio a fin."
     },
     "live": {
-      "name": "Vivimos",
+      "name": "Live",
       "description": "El día del evento: dirección en sala y todo lo que no se ve."
     }
   },

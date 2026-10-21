@@ -61,29 +61,34 @@ export default async function Numbers() {
     // is deliberate: four figures floating in a tall dark band is the effect,
     // so nothing here should grow to fill the space.
     <Section id="cifras" tone="dark" padding="tall">
-      <Reveal>
-        {/* A description list, because that is what this is: each number is
-            described by its label. The pair is written <dt> then <dd> as the
-            markup requires and flipped visually with `flex-col-reverse`, so
-            the number leads on screen without the label losing its association.
+      {/* A description list, because that is what this is: each number is
+          described by its label. The pair is written <dt> then <dd> as the
+          markup requires and flipped visually with `flex-col-reverse`, so the
+          number leads on screen without the label losing its association.
 
-            The track count is fixed at four even when fewer figures survive —
-            a three-item row sitting left with a gap at the end is the same
-            rhythm as the four-item row, where re-centring would not be. */}
-        <dl className="grid grid-cols-2 gap-x-8 gap-y-12 md:grid-cols-4">
-          {figures.map(({ key, value }) => (
-            <div key={key} className="flex flex-col-reverse">
-              {/* `text-paper/70` rather than a muted token: the ink-* neutrals
-                  are mixed for a light ground and all of them fail here. At
-                  70% this measures 8.65:1 on --color-ink-deep, so the label
-                  reads as secondary without dropping below AA at 13px. */}
-              <dt className="text-small text-paper/70 mt-3">{t(key)}</dt>
-              <dd className="font-display text-h2 text-paper font-light">
-                {format.number(value)}
-              </dd>
-            </div>
-          ))}
-        </dl>
+          The track count is fixed at four even when fewer figures survive — a
+          three-item row sitting left with a gap at the end is the same rhythm
+          as the four-item row, where re-centring would not be.
+
+          `as="dl"` keeps that semantic while letting `Reveal` be the grid, so
+          the four figures are direct children and stagger one after another. */}
+      <Reveal
+        stagger
+        as="dl"
+        className="grid grid-cols-2 gap-x-8 gap-y-12 md:grid-cols-4"
+      >
+        {figures.map(({ key, value }) => (
+          <div key={key} className="flex flex-col-reverse">
+            {/* `text-paper/70` rather than a muted token: the ink-* neutrals
+                are mixed for a light ground and all of them fail here. At 70%
+                this measures 7.79:1 on --color-ink-deep, so the label reads as
+                secondary without dropping below AA at 13px. */}
+            <dt className="text-small text-paper/70 mt-3">{t(key)}</dt>
+            <dd className="font-display text-h2 text-paper font-light">
+              {format.number(value)}
+            </dd>
+          </div>
+        ))}
       </Reveal>
     </Section>
   )

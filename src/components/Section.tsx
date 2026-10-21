@@ -24,16 +24,17 @@ import type { ReactNode } from 'react'
  * else renders near-black type on a near-black ground. Two rules, both
  * measured against `--color-ink-deep` (#1a1715):
  *
- *   TEXT     `text-paper` (16.83:1), dimmed with an opacity modifier for
- *            secondary copy. `text-paper/70` is 8.65:1 and still clears AA;
- *            even /50 clears it at 5.05:1, so dim freely.
- *            `text-ink` and `text-ink-muted` are unusable here.
+ *   TEXT     `text-paper` (14.56:1), dimmed with an opacity modifier for
+ *            secondary copy. `text-paper/70` is 7.79:1 and still clears AA,
+ *            so dim freely. `text-ink` (1.05:1) and `text-ink-muted` (2.66:1)
+ *            are unusable here.
  *
- *   ACCENTS  `text-jb-400` (8.15:1), NOT the `text-jb-700` used everywhere
+ *   ACCENTS  `text-jb-400` (7.05:1), NOT the `text-jb-700` used everywhere
  *            else. This is the exact inverse of the rule on paper: jb-700 is
  *            the AA-safe link colour on a light ground and measures just
- *            3.18:1 here, which fails AA for anything under 24px. jb-500 is
- *            also fine at 7.00:1 if a softer accent is wanted.
+ *            2.75:1 here, which fails at every size — there is no large-text
+ *            exemption to fall back on. jb-500 is also fine at 6.06:1 if a
+ *            softer accent is wanted.
  *
  * There is no accent in a dark section today; this is written down so the
  * first one that needs a link does not have to re-derive it.
