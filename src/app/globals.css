@@ -164,9 +164,17 @@ html {
    *
    * `!important` because Motion writes these as inline styles. The child
    * selector matters in `stagger` mode: there it is the direct children that
-   * each carry their own `opacity: 0`, not the container. See Reveal.tsx. */
+   * each carry their own `opacity: 0`, not the container. See Reveal.tsx.
+   *
+   * `[data-line]` is the hero's split headline. Its moving parts are a level
+   * deeper than the container's direct children — h1 > mask > line — so they
+   * need their own selector. NOT `[data-reveal] *`: that would also catch the
+   * CTA's underline, which is `scale-x-0` until hover, and pin it open. The
+   * selector list here and in `RevealFallback`'s <noscript> are the same two
+   * cases and have to stay in step. */
   [data-reveal],
-  [data-reveal] > * {
+  [data-reveal] > *,
+  [data-line] {
     opacity: 1 !important;
     translate: none !important;
     transform: none !important;

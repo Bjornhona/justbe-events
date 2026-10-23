@@ -55,10 +55,48 @@ import { Children, isValidElement, type ElementType, type ReactNode } from 'reac
  */
 
 /** The published easing. A tuple, not `as const` — Motion wants it mutable. */
-const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1]
+export const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1]
 const DISTANCE = 32
-const DURATION = 0.7
+export const DURATION = 0.7
 const STAGGER = 0.09
+
+/**
+ * With JS off nothing ever animates in, so the elements would keep the inline
+ * `opacity: 0` Motion server-rendered and the section would be blank. This puts
+ * it back.
+ *
+ * Rendered as a SIBLING of the animated container, never a child. The container
+ * is sometimes a <dl> — whose content model allows only dt/dd/div — and
+ * sometimes a grid, where a stray child is a stray cell. The style selector is
+ * global, so it works from anywhere in the document, and more than one copy on
+ * the page is harmless.
+ *
+ * `dangerouslySetInnerHTML` rather than JSX children: a browser with scripting
+ * *enabled* parses <noscript> contents as raw text, so React would find a text
+ * node where it expected a <style> element and report a hydration mismatch.
+ * Setting the HTML directly opts the subtree out of hydration entirely.
+ *
+ * Both `translate` and `transform` are reset: Motion writes `transform`,
+ * Tailwind v4 animates `translate`, and this file has been through both.
+ *
+ * `[data-line]` is the hero's split headline, whose moving parts are
+ * grandchildren of the container rather than direct children — see
+ * `sections/HeroText.tsx`. It is listed by its own attribute rather than
+ * widening this to `[data-reveal] *`, which would also hit the CTA's underline
+ * (`scale-x-0` until hover) and pin it open. Same reasoning as the
+ * reduced-motion rule in `globals.css`, which carries the same selector list.
+ */
+export function RevealFallback() {
+  return (
+    <noscript
+      data-reveal-fallback=""
+      dangerouslySetInnerHTML={{
+        __html:
+          '<style>[data-reveal],[data-reveal] > *,[data-line]{opacity:1!important;translate:none!important;transform:none!important}noscript[data-reveal-fallback]{display:none}</style>',
+      }}
+    />
+  )
+}
 
 /** `hidden` is byte-identical across both branches. See the note above. */
 const item = (instant: boolean): Variants => ({
@@ -126,31 +164,7 @@ export default function Reveal({
 
   return (
     <>
-      {/* With JS off nothing ever animates in, so the elements would keep the
-          inline `opacity: 0` Motion server-rendered and the section would be
-          blank. This puts it back.
-
-          A SIBLING of the container, not a child. The container is now
-          sometimes a <dl> — whose content model allows only dt/dd/div — and
-          sometimes a grid, where a stray child is a stray cell. The style
-          selector is global, so it works from anywhere in the document.
-
-          `dangerouslySetInnerHTML` rather than JSX children: a browser with
-          scripting *enabled* parses <noscript> contents as raw text, so React
-          would find a text node where it expected a <style> element and report
-          a hydration mismatch. Setting the HTML directly opts the subtree out
-          of hydration entirely.
-
-          Both `translate` and `transform` are reset: Motion writes `transform`,
-          Tailwind v4 animates `translate`, and this file has been through
-          both. */}
-      <noscript
-        data-reveal-fallback=""
-        dangerouslySetInnerHTML={{
-          __html:
-            '<style>[data-reveal],[data-reveal] > *{opacity:1!important;translate:none!important;transform:none!important}noscript[data-reveal-fallback]{display:none}</style>',
-        }}
-      />
+      <RevealFallback />
 
       {stagger ? (
         <Container

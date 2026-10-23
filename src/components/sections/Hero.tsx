@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 
 import { Link } from '@/i18n/routing'
-import Reveal from '@/components/Reveal'
+import HeroText from '@/components/sections/HeroText'
 
 /**
  * Server Component. No image: the tagline is the hero, so the only things
@@ -10,7 +10,14 @@ import Reveal from '@/components/Reveal'
  * The accent is a rich-text tag rather than a split string, because the word
  * that carries the brand is not the same word in both languages — "just" in
  * English, "solo" in Spanish — and it sits mid-sentence in each. Translators
- * move the tag; nothing here needs to know where it landed.
+ * move the tag; nothing here needs to know where it landed. The line-by-line
+ * reveal in `HeroText` takes the headline apart and puts it back together
+ * around that span wherever it ended up.
+ *
+ * This file keeps the copy, the CTA's destination and the section box. The four
+ * text blocks and their classes live in `HeroText`, which has to own them: it
+ * animates each one, and the lead and the CTA cannot be timed until the browser
+ * has told it how many lines the headline rags to.
  *
  * `min-h-svh` rather than `min-h-screen`: on mobile Safari `100vh` includes the
  * retracting URL bar, which pushes the scroll cue below the fold on load.
@@ -32,48 +39,13 @@ export default async function Hero() {
           3vh difference is 24px at that height — just enough, and it only
           comes off the top, so the bottom of the hero is unchanged. */}
       <div className="mx-auto w-full max-w-6xl px-4 py-[clamp(7rem,15vh,14rem)] sm:px-6">
-        <Reveal>
-          {/* A <p>, not a heading: it is a standing brand line, not a title,
-              and an <h2> above the <h1> would put the page's first two
-              headings out of order for anyone navigating by heading.
-
-              English in both locales on purpose — it is set copy rather than
-              something to translate — but it still comes from the catalogues
-              so it is editable in one place and the ES file does not silently
-              diverge. The tracking is the whole effect at this size: 0.18em is
-              wide enough that the line reads as spaced capitals rather than as
-              small text that happens to be uppercase. */}
-          <p className="text-small text-ink-muted mb-[clamp(1.5rem,4vh,2.5rem)] text-center font-sans tracking-[0.18em] uppercase md:text-left">
-            {t('eyebrow')}
-          </p>
-
-          {/* NO max-width HERE, ON PURPOSE — do not reinstate one.
-              A `ch` constraint cannot bind on this element. Clash Display's
-              zero glyph is 0.681em at wght 300, so at the 1440px hero size
-              (the 7.5rem cap = 120px) a single `ch` is ~82px: even 12ch
-              computes to ~981px, and anything loose enough to look reasonable
-              in the source is wider than the 1104px content box (max-w-6xl
-              1152px less the 48px of px-6) and therefore dead code. The
-              container is the measure instead.
-
-              Measured, not assumed: `--text-hero` rags this to four lines at
-              1440 in both locales. */}
-          <h1 className="font-display text-hero text-ink text-center font-light text-balance md:text-left">
-            {t.rich('tagline', {
-              accent: (chunks) => <span className="text-jb-500">{chunks}</span>,
-            })}
-          </h1>
-
-          {/* jb-700, not the jb-500 above: 500 fails AA at body size on paper.
-              `46ch` does bind here, unlike on the h1 above: Satoshi's zero is
-              just as wide (0.683em), but this is 17px type rather than 158px,
-              so a ch is ~11.6px and the measure lands at ~534px — comfortably
-              inside the 1104px container. */}
-          <p className="text-body text-ink-muted mx-auto mt-8 max-w-[46ch] text-center md:mx-0 md:text-left">
-            {t('lead')}
-          </p>
-
-          <p className="mt-10 text-center md:text-left">
+        <HeroText
+          eyebrow={t('eyebrow')}
+          tagline={t.rich('tagline', {
+            accent: (chunks) => <span className="text-jb-500">{chunks}</span>,
+          })}
+          lead={t('lead')}
+          cta={
             <Link
               href={{ pathname: '/', hash: 'section-contact' }}
               className="text-jb-700 group relative inline-block rounded-xs focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current"
@@ -86,8 +58,8 @@ export default async function Hero() {
                 className="absolute -bottom-1 left-0 h-px w-full origin-right scale-x-0 bg-current transition-transform duration-300 ease-out group-hover:origin-left group-hover:scale-x-100 group-focus-visible:origin-left group-focus-visible:scale-x-100 motion-reduce:transition-none"
               />
             </Link>
-          </p>
-        </Reveal>
+          }
+        />
       </div>
 
       {/* Decorative, so it is not announced and carries no string to translate.
